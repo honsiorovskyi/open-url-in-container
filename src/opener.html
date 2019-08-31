@@ -1,0 +1,52 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+  -- License, v. 2.0. If a copy of the MPL was not distributed with this
+  -- file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<!doctype html>
+<head>
+	<title>Open external links in a container. Or not.</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="stylesheet" href="chrome://browser/skin/error-pages.css">
+	<style>
+		.hidden {
+			display: none;
+		}
+
+		#errorBody {
+			font-weight: bold;
+			padding-left: 40px;
+			padding-right: 40px;
+		}
+	</style>
+</head>
+<body>
+	<div xmlns="http://www.w3.org/1999/xhtml" id="errorPageContainer" class="container hidden">
+		<div id="text-container">
+			<!-- Error Title -->
+			<div class="title">
+			<h1 class="title-text">Open external links in a container. Or not.</h1>
+			</div>
+	
+			<!-- LONG CONTENT (the section most likely to require scrolling) -->
+			<div id="errorLongContent">
+	
+			<!-- Short Description -->
+			<div id="errorShortDesc">
+				<p id="errorShortDescText">
+					We are unable to open the URL you requested.
+					This could be due to an internal problem or some mistakes in your link.
+					Please check the correctness of your link and try again.
+					If you think there's a problem with an extension,
+					please <a href="https://github.com/honsiorovskyi/open-url-in-container/issues">let us know</a>.
+				</p>
+			</div>
+	
+			<!-- Long Description (Note: See netError.dtd for used XHTML tags) -->
+			<div id="errorLongDesc">
+				<p>The error we received is following:</p>
+				<p id="errorBody"></p>
+			</div>
+		</div>
+	</div>
+	<script src="./opener.js" type="module"></script>
+</body>
