@@ -5,10 +5,11 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 usage() {
+	app=$(basename $0)
 	printf "Usage:\n\n"
-	printf "$0 [COLOR] [ICON] [-n|--name NAME|--name=NAME] URL\n"
-	printf "$0 URL [COLOR] [ICON] [-n|--name NAME|--name=NAME]\n"
-	printf "$0 -h|--help\n\n"
+	printf "$app [COLOR] [ICON] [-n|--name NAME|--name=NAME] URL\n"
+	printf "$app URL [COLOR] [ICON] [-n|--name NAME|--name=NAME]\n"
+	printf "$app -h|--help\n\n"
 	printf "Where COLOR is one of:\n\t--blue\n\t--turquoise\n\t--green\n\t--yellow\n\t--orange\n\t--red\n\t--pink\n\t--purple\n\n"
 	printf "Where ICON is one of:\n\t--fingerprint\n\t--briefcase\n\t--dollar\n\t--cart\n\t--circle\n\t--gift\n\t--vacation\n\t--food\n\t--fruit\n\t--pet\n\t--tree\n\t--chill\n\n"
 	printf "If container NAME is not supplied, the domain part of URL will be used as NAME instead.\n"
