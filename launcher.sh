@@ -6,13 +6,19 @@
 
 usage() {
 	app=$(basename $0)
-	printf "Usage:\n\n"
-	printf "$app [COLOR] [ICON] [-n|--name NAME|--name=NAME] URL\n"
-	printf "$app URL [COLOR] [ICON] [-n|--name NAME|--name=NAME]\n"
-	printf "$app -h|--help\n\n"
+	printf "$app - open URL in a specific container in Firefox.\n\n"
+	printf "Usage:\n"
+	printf "\t$app [OPTIONS] URL\n"
+	printf "\t$app URL [OPTIONS]\n"
+	printf "\t$app -h|--help\n\n"
+	printf "Where optional OPTIONS may include any combination of:\n"
+	printf "\t--COLOR\t\tcolor for the container (if does not exist)\n"
+	printf "\t--ICON\t\ticon for the container (if does not exist)\n"
+	printf "  -n,\t--name=NAME\tcontainer name (default: domain part of the URL)\n"
+	printf "  -p,\t--pin\t\tpin tab\n"
+	printf "  -r,\t--reader\topen tab in the reader mode\n\n"
 	printf "Where COLOR is one of:\n\t--blue\n\t--turquoise\n\t--green\n\t--yellow\n\t--orange\n\t--red\n\t--pink\n\t--purple\n\n"
-	printf "Where ICON is one of:\n\t--fingerprint\n\t--briefcase\n\t--dollar\n\t--cart\n\t--circle\n\t--gift\n\t--vacation\n\t--food\n\t--fruit\n\t--pet\n\t--tree\n\t--chill\n\n"
-	printf "If container NAME is not supplied, the domain part of URL will be used as NAME instead.\n"
+	printf "Where ICON is one of:\n\t--fingerprint\n\t--briefcase\n\t--dollar\n\t--cart\n\t--circle\n\t--gift\n\t--vacation\n\t--food\n\t--fruit\n\t--pet\n\t--tree\n\t--chill\n"
 	exit 1
 }
 
@@ -86,6 +92,14 @@ do
 		ICON="${1#--}"
 		shift
 		;;
+	-p|--pin)
+		PIN=true
+		shift
+		;;
+	-r|--reader)
+		READER_MODE=true
+		shift
+		;;
 	--*|-*)
 		echo "Error: Unknown parameter: $1"
 		usage
@@ -109,13 +123,25 @@ fi
 URL=$(urlencode $URL)
 
 FULL_URL="ext+container:url=${URL}&name=${NAME}"
+
 if [ -n "$COLOR" ]
 then
 	FULL_URL="${FULL_URL}&color=${COLOR}"
 fi
+
 if [ -n "$ICON" ]
 then
 	FULL_URL="${FULL_URL}&icon=${ICON}"
+fi
+
+if [ -n "$PIN" ]
+then
+	FULL_URL="${FULL_URL}&pinned=true"
+fi
+
+if [ -n "$READER_MODE" ]
+then
+	FULL_URL="${FULL_URL}&openInReaderMode=true"
 fi
 
 $FIREFOX $FIREFOX_ARGS "$FULL_URL"
