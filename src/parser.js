@@ -5,7 +5,7 @@
 export function parse(query, schema) {
     let searchParams = new URLSearchParams(query);
     let params = {};
-        
+
     // validate each key from the schema
     // except the __validators one
     for (let k of Object.keys(schema)) {

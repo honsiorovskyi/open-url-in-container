@@ -16,7 +16,7 @@ describe('parser', () => {
             d: true,
         })
     })
-    
+
     it('should fail on validators failure', () => {
         expect(() => { parse(data, {
             f: [required],
@@ -173,7 +173,7 @@ describe('atLeastOneRequired', () => {
         expect(atLeastOneRequired(['a', 'b'])({a: 5, b: null})).toStrictEqual({a: 5, b: null})
         expect(atLeastOneRequired(['a', 'b'])({a: null, b: 5})).toStrictEqual({a: null, b: 5})
         expect(atLeastOneRequired(['a', 'b'])({a: 5, b: 5})).toStrictEqual({a: 5, b: 5})
-        expect(atLeastOneRequired(['a', 'b'])({a: 5})).toStrictEqual({a: 5})  
+        expect(atLeastOneRequired(['a', 'b'])({a: 5})).toStrictEqual({a: 5})
     })
 
     it('should fail when none of the parameters is present', () => {
