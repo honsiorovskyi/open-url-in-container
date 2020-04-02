@@ -23,7 +23,7 @@ const schema = {
 	index: [integer],
 	pinned: [boolean],
 	openInReaderMode: [boolean],
-    
+
     // global validators
     __validators: [atLeastOneRequired(['id', 'name'])],
 }
@@ -50,13 +50,13 @@ async function main() {
 		error(`Error getting container: ${e}.`)
 		return
 	}
-	
+
 	if (!container) {
 		try {
 			container = await createContainer(params)
 		} catch (e) {
 			error(`Error creating container: ${e}.`)
-			return 
+			return
 		}
 	}
 
@@ -84,7 +84,7 @@ async function getContainer(params) {
 	if (params.id) {
 		return await browser.contextualIdentities.get(params.id)
 	}
-	
+
 	let containers = await browser.contextualIdentities.query({
 		name: params.name,
 	})
@@ -105,11 +105,26 @@ async function newTab(container, params) {
 	await browser.tabs.create({
 		cookieStoreId: container.cookieStoreId,
 		url: params.url,
-		index: params.index,
+		index: currentTab.index+1,
 		pinned: params.pinned,
 		openInReaderMode: params.openInReaderMode,
 	})
 	await browser.tabs.remove(currentTab.id)
 }
+
+async function currentTab(container, params) {
+	let currentTab = await browser.tabs.getCurrent()
+
+	await browser.tabs.create({
+		cookieStoreId: container.cookieStoreId,
+		url: params.url,
+		index: params.index,
+		pinned: params.pinned,
+		openInReaderMode: params.openInReaderMode,
+	})
+
+	await browser.tabs.remove(currentTab.id)
+}
+
 
 main()
