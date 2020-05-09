@@ -5,21 +5,27 @@
     "version": "1.0.3",
 
     "icons": {
-      "48": "icons/extension-48.png",
-      "96": "icons/extension-96.png"
+        "48": "icons/extension-48.png",
+        "96": "icons/extension-96.png"
     },
 
-    "protocol_handlers": [
-        {
-          "protocol": "ext+container",
-          "name": "Open URL in a container",
-          "uriTemplate": "/opener.html#%s"
-        }
-    ],
-    
+    "protocol_handlers": [{
+        "protocol": "ext+container",
+        "name": "Open URL in a container",
+        "uriTemplate": "/opener.html#%s"
+    }],
+
+    "browser_action": {
+        "default_icon": "icons/extension-48.png",
+        "default_title": "Open URL in a container",
+        "default_popup": "popup.html",
+        "browser_style": true
+    },
+
     "permissions": [
         "contextualIdentities",
-        "cookies"
+        "cookies",
+        "tabs",
+        "bookmarks"
     ]
-  }
-  
+}

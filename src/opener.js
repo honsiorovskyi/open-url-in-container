@@ -35,7 +35,21 @@ function error(e) {
 	document.getElementById('errorPageContainer').classList.remove('hidden');
 }
 
+function changeFavicon() {
+	let params = new URLSearchParams(window.location.search)
+	let favIconUrl = params.get('favIconUrl')
+	console.log(favIconUrl)
+
+	var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+	link.type = 'image/x-icon';
+	link.rel = 'icon';
+	link.href = favIconUrl;
+    document.getElementsByTagName('head')[0].appendChild(link);
+}
+
 async function main() {
+	changeFavicon()
+
 	let params, container;
 	try {
 		params = parseQuery()
