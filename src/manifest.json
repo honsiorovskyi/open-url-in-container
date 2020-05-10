@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Open external links in a container",
     "description": "This extension enables support for opening links in specific containers using custom protocol handler. It works for terminal, OS shortcuts and regular HTML pages.",
-    "version": "1.0.2",
+    "version": "1.0.3",
 
     "icons":
     {

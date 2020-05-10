@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="ext+container:name=Demo&url=https://example.org/style.css">
+    <script src="ext+container:name=Demo&url=https://example.org/script.js"></script>
+    <script>
+        fetch("ext+container:name=Demo&url=https://example.org/document.json", {
+                mode: 'no-cors'
+            })
+            .then(function(r) {
+                r.json().then(function(j) {
+                    document.querySelector('.fetchtest').textContent = "Fetch successful"
+                })
+            });
+    </script>
+</head>
+
+<body>
+    <p><a href="ext+container:name=Demo&url=https://example.org/link">Test link</a></p>
+    <p><img src="ext+container:navar fr = me=Demo&url=https://example.org/image.png" alt="Test image"></p>
+    <p><iframe src="ext+container:name=Demo&url=http://localhost:8000/foo" alt="Test iframe"></iframe></p>
+    <p class="fetchtest"></p>
+</body>
+
+</html>
