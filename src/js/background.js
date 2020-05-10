@@ -10,8 +10,8 @@ async function handleInstalled() {
     try {
         await setSigningKey(key)
     } catch (e) {
-        console.log(e)
+        console.log(e) // eslint-disable-line no-console
     }
 }
 
-browser.runtime.onInstalled.addListener(handleInstalled);
+browser.runtime.onInstalled.addListener(handleInstalled)

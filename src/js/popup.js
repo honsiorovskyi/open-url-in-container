@@ -71,7 +71,6 @@ function showBookmarkConfirmation(title, url) {
     document.getElementById(BOOKMARK_CONFIRMATION_CANCEL_ID).onclick = hideBookmarkConfirmation
     document.getElementById(BOOKMARK_CONFIRMATION_CONFIRM_ID).onclick = async function() {
         hideBookmarkConfirmation()
-        console.log('creating bookmark', title, url)
         await browser.bookmarks.create({
             title: title,
             url: url,
@@ -86,7 +85,6 @@ async function updateLinks(containerId, containerName) {
 
     const signingKey = await getSigningKey()
     const signature = await generateSignature({key: signingKey}, {name: containerName})
-    console.log(containerId, containerName, signingKey)
 
     const hashQs = new URLSearchParams()
     hashQs.set('name', containerName)

@@ -12,7 +12,7 @@ export async function setSigningKey(key, force) {
     const existingKey = await getSigningKey()
 
     if (existingKey && !force) {
-        throw 'signing key already exists, use force to overwrite'
+        throw new Error('signing key already exists, use force to overwrite')
     }
 
     await browser.storage.local.set({

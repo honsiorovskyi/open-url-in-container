@@ -74,12 +74,12 @@ export function parseOpenerParams(encodedHash) {
     try {
         const hash = decodeURIComponent(encodedHash)
         if (!hash.startsWith(hashPrefix)) {
-            throw ('invalid parameters scheme')
+            throw new Error('invalid parameters scheme')
         }
 
         const queryString = hash.substr(hashPrefix.length)
         return parseQueryString(queryString, openerParamsSchema)
     } catch (e) {
-        throw `parsing parameters: ${e}`
+        throw new Error(`parsing parameters: ${e}`)
     }
 }

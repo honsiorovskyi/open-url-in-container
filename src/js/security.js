@@ -3,38 +3,37 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 export async function sha256(value) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(value);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    return hashHex;
+    const encoder = new TextEncoder()
+    const data = encoder.encode(value)
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+    return hashHex
 }
 
 function serializeData(id, name, key) {
     return `${id || ''}${name || ''}${key}`
 }
 
-export async function verifySignature({ key } = config, { signature, id, name } = params) {
+export async function verifySignature({ key }, { signature, id, name }) {
     if (!key) {
-        throw 'key cannot be empty'
+        throw new Error('key cannot be empty')
     }
 
     const digest = await sha256(serializeData(id, name, key))
-    console.log(signature, digest, id, name)
-	if (digest === signature) {
-		return true
-	}
-
-	return false
-}
-
-export async function generateSignature({ key } = config, { id, name } = params) {
-    if (!key) {
-        throw 'key cannot be empty'
+    if (digest === signature) {
+        return true
     }
 
-    return await sha256(serializeData(id, name, key))
+    return false
+}
+
+export function generateSignature({ key }, { id, name }) {
+    if (!key) {
+        throw new Error('key cannot be empty')
+    }
+
+    return sha256(serializeData(id, name, key))
 }
 
 export function generateKey() {

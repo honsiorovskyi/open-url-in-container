@@ -5,8 +5,8 @@
 import '../lib/mocha/mocha.js'
 import '../lib/chai/chai.js'
 
-mocha.setup('bdd');
-mocha.checkLeaks();
+mocha.setup('bdd')
+mocha.checkLeaks()
 window.expect = chai.expect
 
-mocha.run();
+mocha.run()
