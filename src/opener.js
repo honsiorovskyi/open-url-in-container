@@ -112,19 +112,4 @@ async function newTab(container, params) {
 	await browser.tabs.remove(currentTab.id)
 }
 
-async function currentTab(container, params) {
-	let currentTab = await browser.tabs.getCurrent()
-
-	await browser.tabs.create({
-		cookieStoreId: container.cookieStoreId,
-		url: params.url,
-		index: params.index,
-		pinned: params.pinned,
-		openInReaderMode: params.openInReaderMode,
-	})
-
-	await browser.tabs.remove(currentTab.id)
-}
-
-
 main()
