@@ -3,50 +3,92 @@
   -- file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
 
 <!doctype html>
-<head>
-	<title>Open external links in a container. Or not.</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<link rel="stylesheet" href="chrome://browser/skin/error-pages.css">
-	<style>
-		.hidden {
-			display: none;
-		}
 
-		#errorBody {
-			font-weight: bold;
-			padding-left: 40px;
-			padding-right: 40px;
-		}
-	</style>
+<html lang="en">
+
+<head>
+    <title>Open external links in a container. Or not.</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="chrome://browser/skin/error-pages.css">
+    <style>
+        #internalErrorContainer .title {
+            background-image: url("chrome://global/skin/icons/error.svg");
+            fill: red;
+        }
+        
+        #securityConfirmationContainer .title {
+            background-image: url("chrome://browser/skin/cert-error.svg");
+        }
+        
+        .hidden {
+            /* opacity: 0.3; */
+            display: none;
+        }
+        
+        #securityConfirmationContainerName,
+        #internalErrorBody,
+        #securityConfirmationUrl {
+            font-weight: bold;
+        }
+        
+        #internalErrorBody,
+        #securityConfirmationUrl {
+            display: block;
+            overflow: auto;
+        }
+    </style>
 </head>
+
 <body>
-	<div xmlns="http://www.w3.org/1999/xhtml" id="errorPageContainer" class="container hidden">
-		<div id="text-container">
-			<!-- Error Title -->
-			<div class="title">
-			<h1 class="title-text">Open external links in a container. Or not.</h1>
-			</div>
-	
-			<!-- LONG CONTENT (the section most likely to require scrolling) -->
-			<div id="errorLongContent">
-	
-			<!-- Short Description -->
-			<div id="errorShortDesc">
-				<p id="errorShortDescText">
-					We are unable to open the URL you requested.
-					This could be due to an internal problem or some mistakes in your link.
-					Please check the correctness of your link and try again.
-					If you think there's a problem with an extension,
-					please <a href="https://github.com/honsiorovskyi/open-url-in-container/issues">let us know</a>.
-				</p>
-			</div>
-	
-			<!-- Long Description (Note: See netError.dtd for used XHTML tags) -->
-			<div id="errorLongDesc">
-				<p>The error we received is following:</p>
-				<p id="errorBody"></p>
-			</div>
-		</div>
-	</div>
-	<script src="./opener.js" type="module"></script>
+    <div xmlns="http://www.w3.org/1999/xhtml" id="errorPageContainer" class="container">
+        <div id="text-container">
+            <!-- Internal error -->
+            <div id="internalErrorContainer" class="hidden">
+                <div class="title">
+                    <h1 class="title-text">Error: Open external links in a container</h1>
+                </div>
+
+                <div class="description">
+                    <div>
+                        <p>We are unable to open the URL you requested.</p>
+                        <p>This could be due to an internal problem or some mistakes in your link. Please check the correctness of your link and try again. If you think there's a problem with an extension, please <a href="https://github.com/honsiorovskyi/open-url-in-container/issues">let us know</a>.</p>
+
+                        <p>Below you can see some error details:</p>
+                        <p id="internalErrorBody"></p>
+                    </div>
+                </div>
+            </div>
+            <!-- / Internal error -->
+
+            <!-- Security confirmation -->
+            <div id="securityConfirmationContainer" class="hidden">
+                <div class="title">
+                    <h1 class="title-text">Warning: Open external links in a container</h1>
+                </div>
+
+                <div class="description">
+                    <div>
+                        <p>
+                            Someone, maybe you, has tried to open the following URL in your
+                            <span id="securityConfirmationContainerName"></span> container:
+                        </p>
+                        <p>
+                            <span id="securityConfirmationUrl"></span>
+                        </p>
+                        <p>If you do not recognize this action, maybe someone is trying to track you across your containers. In that case we recommend to go back.</p>
+                        <p>Otherwise, if you recongnize this action and/or it was your intention, you can proceed with the redirect.</p>
+                    </div>
+                </div>
+
+                <div class="button-container">
+                    <button id="securityConfirmationGoBack" class="primary" autofocus="true">Go Back (Recommended)</button>
+                    <button id="securityConfirmationConfirm">Continue</button>
+                </div>
+            </div>
+            <!-- / Security confirmation -->
+        </div>
+
+        <script src="./js/opener.js" type="module"></script>
 </body>
+
+</html>

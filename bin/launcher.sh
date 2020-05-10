@@ -12,11 +12,12 @@ usage() {
 	printf "\t$app URL [OPTIONS]\n"
 	printf "\t$app -h|--help\n\n"
 	printf "Where optional OPTIONS may include any combination of:\n"
-	printf "\t--COLOR\t\tcolor for the container (if does not exist)\n"
-	printf "\t--ICON\t\ticon for the container (if does not exist)\n"
-	printf "  -n,\t--name=NAME\tcontainer name (default: domain part of the URL)\n"
-	printf "  -p,\t--pin\t\tpin tab\n"
-	printf "  -r,\t--reader\topen tab in the reader mode\n\n"
+	printf "\t--COLOR\t\t\tcolor for the container (if does not exist)\n"
+	printf "\t--ICON\t\t\ticon for the container (if does not exist)\n"
+	printf "  -n,\t--name=NAME\t\tcontainer name (default: domain part of the URL)\n"
+	printf "  -s,\t--signature=SIGNATURE\tcontainer signature to prevent clickjacking\n"
+	printf "  -p,\t--pin\t\t\tpin tab\n"
+	printf "  -r,\t--reader\t\topen tab in the reader mode\n\n"
 	printf "Where COLOR is one of:\n\t--blue\n\t--turquoise\n\t--green\n\t--yellow\n\t--orange\n\t--red\n\t--pink\n\t--purple\n\n"
 	printf "Where ICON is one of:\n\t--fingerprint\n\t--briefcase\n\t--dollar\n\t--cart\n\t--circle\n\t--gift\n\t--vacation\n\t--food\n\t--fruit\n\t--pet\n\t--tree\n\t--chill\n"
 	exit 1
@@ -82,6 +83,19 @@ do
 		NAME="${_name#--name=}"
 		shift
 		;;
+	-s|--signature)
+		assertOnlyOne SIGNATURE
+		SIGNATURE="$2"
+		shift
+		shift
+		;;
+	--signature=*)
+		assertOnlyOne SIGNATURE
+		_signature="$1"
+		SIGNATURE="${_signature#--signature=}"
+		shift
+		shift
+		;;
 	--blue|--turquoise|--green|--yellow|--orange|--red|--pink|--purple)
 		assertOnlyOne COLOR
 		COLOR="${1#--}"
@@ -142,6 +156,11 @@ fi
 if [ -n "$READER_MODE" ]
 then
 	FULL_URL="${FULL_URL}&openInReaderMode=true"
+fi
+
+if [ -n "$SIGNATURE" ]
+then
+	FULL_URL="${FULL_URL}&signature=${SIGNATURE}"
 fi
 
 $FIREFOX $FIREFOX_ARGS "$FULL_URL"

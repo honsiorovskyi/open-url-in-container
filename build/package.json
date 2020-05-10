@@ -1,0 +1,18 @@
+{
+    "name": "open-url-in-container",
+    "author": {
+        "name": "Denys Honsiorovskyi",
+        "url": "https://github.com/honsiorovskyi"
+    },
+    "repository": {
+        "url": "https://github.com/honsiorovskyi/open-url-in-container"
+    },
+    "license": "MPL-2.0",
+    "scripts": {
+        "build": "web-ext build --overwrite-dest --source-dir ../src",
+        "start": "web-ext run --source-dir ../src"
+    },
+    "devDependencies": {
+        "web-ext": "^4.2.0"
+    }
+}

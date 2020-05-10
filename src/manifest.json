@@ -15,17 +15,23 @@
         "uriTemplate": "/opener.html#%s"
     }],
 
-    "browser_action": {
+    "page_action": {
         "default_icon": "icons/extension-48.png",
         "default_title": "Open URL in a container",
         "default_popup": "popup.html",
-        "browser_style": true
+        "browser_style": true,
+        "show_matches": ["<all_urls>"]
+    },
+
+    "background": {
+        "page": "background.html"
     },
 
     "permissions": [
         "contextualIdentities",
         "cookies",
         "tabs",
-        "bookmarks"
+        "bookmarks",
+        "storage"
     ]
 }
