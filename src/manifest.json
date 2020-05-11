@@ -5,6 +5,7 @@
     "version": "1.0.3",
 
     "icons": {
+        "19": "icons/extension-19.png",
         "48": "icons/extension-48.png",
         "96": "icons/extension-96.png"
     },
@@ -16,7 +17,7 @@
     }],
 
     "page_action": {
-        "default_icon": "icons/extension-48.png",
+        "default_icon": "icons/extension-19.png",
         "default_title": "Open URL in a container",
         "default_popup": "popup.html",
         "browser_style": true,
