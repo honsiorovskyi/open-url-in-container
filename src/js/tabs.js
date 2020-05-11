@@ -31,3 +31,10 @@ export async function closeCurrentTab() {
     let currentTab = await browser.tabs.getCurrent()
     await browser.tabs.remove(currentTab.id)
 }
+
+export async function getActiveTab() {
+    return (await browser.tabs.query({
+        active: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT
+    }))[0]
+}

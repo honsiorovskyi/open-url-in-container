@@ -12,35 +12,35 @@
         body {
             width: 300px;
         }
-        
+
         .container {
             padding: 5px;
         }
-        
+
         .centered {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        
+
         .hidden {
             display: none;
         }
-        
+
         .element {
             padding: 5px;
         }
-        
+
         .element>select {
             width: 100%;
         }
-        
+
         .draggable {
             padding: 10px;
             border: 1px solid #CDC7C2;
             background-color: #faf9f8;
         }
-        
+
         .draggable>a {
             display: block;
             width: 100%;
@@ -52,64 +52,110 @@
             text-decoration: none;
             background: transparent;
         }
-        
+
         .draggable>a>img {
             width: 19px;
             height: 19px;
             margin-right: 6px;
             vertical-align: middle;
         }
-        
+
         .ro-input>input {
             width: 100%;
             border-radius: 0;
             padding: 10px;
         }
+
+        .folder.folded .content {
+            display: none;
+        }
+
+        .title {
+            font-weight: bold;
+        }
+
+        .folder .title {
+            padding: 5px;
+        }
+
+        .folder .title::before {
+            content: '–';
+            float: left;
+            width: 19px;
+            text-align: center;
+            color: #aaa;
+            vertical-align: middle;
+        }
+
+        .folder.folded .title::before {
+            content: '+';
+        }
+
+        .folder .content {
+            padding: 0;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container">
+    <div id="loader"></div>
+    <div id="mainContainer" class="container hidden">
         <div class="element">
-            <label for="container">Select container:</label>
+            <div class="title">
+                <label for="container">Open URL in the container</label>
+            </div>
         </div>
         <div class="element">
             <select id="container" class="browser-style"></select>
         </div>
-        <div class="element">
-            <label for="link">Copy this to use in terminal:</label>
+        <div id="bookmarkFolder" class="folder folded">
+            <div class="title">Bookmark</div>
+            <div class="content">
+                <!-- <div class="element">
+                        <label for="link">Drag this to bookmarks:</label>
+                    </div> -->
+                <div class="element container">
+                    <div>
+                        <!-- this empty div is needed for dragging to work - I don't know why -->
+                    </div>
+                    <div id="link" class="draggable">
+                        <a id='link-a'></a>
+                    </div>
+                </div>
+                <div id="bookmark-confirmation" class="container centered hidden">
+                    <div class="element">
+                        <label for="buttons">Create a new bookmark?</label>
+                    </div>
+                    <div class="element">
+                        <button id="bookmark-confirmation-confirm" class="browser-style default">Create</button>
+                        <button id="bookmark-confirmation-cancel" class="browser-style">Cancel</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="element container">
-            <div>
-                <!-- this empty div is needed for dragging to work - I don't know why -->
-            </div>
-            <div id="command" class="ro-input browser-style">
-                <input id="command-input" type="text" readonly />
-            </div>
-        </div>
-        <div class="element">
-            <label for="link">Drag this to bookmarks:</label>
-        </div>
-        <div class="element container">
-            <div>
-                <!-- this empty div is needed for dragging to work - I don't know why -->
-            </div>
-            <div id="link" class="draggable">
-                <a id='link-a'></a>
+        <div id="terminalFolder" class="folder folded">
+            <div class="title">Terminal</div>
+            <div class="content">
+                <div class="element container">
+                    <div id="command" class="ro-input browser-style">
+                        <input id="terminalInput" type="text" readonly />
+                    </div>
+                </div>
             </div>
         </div>
-        <div id="bookmark-confirmation" class="container centered hidden">
-            <div class="element">
-                <label for="buttons">Create a new bookmark in the default folder?</label>
-            </div>
-            <div class="element">
-                <button id="bookmark-confirmation-confirm" class="browser-style default">Create</button>
-                <button id="bookmark-confirmation-cancel" class="browser-style">Cancel</button>
+        <div id="signatureFolder" class="folder folded">
+            <div class="title">Signature</div>
+            <div class="content">
+                <div class="element container">
+                    <div id="command" class="ro-input browser-style">
+                        <input id="signatureInput" type="text" readonly />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script src="./js/popup.js" type="module"></script>
+    <script src="./js/popup/popup.js" type="module"></script>
 </body>
 
 </html>
