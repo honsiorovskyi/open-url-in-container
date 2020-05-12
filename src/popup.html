@@ -10,7 +10,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
         body {
-            width: 300px;
+            width: 350px;
         }
 
         .container {
@@ -31,8 +31,23 @@
             padding: 5px;
         }
 
-        .element>select {
-            width: 100%;
+        .row {
+            display: flex;
+            flex-direction: row;
+        }
+
+        #container {
+            flex-grow: 1;
+        }
+
+        .gear-button {
+            margin-left: 5px;
+            width: 24px;
+            height: 24px;
+            background-image: url('./icons/gear.svg');
+            background-size: 50%;
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
         }
 
         .draggable {
@@ -106,7 +121,24 @@
             </div>
         </div>
         <div class="element">
-            <select id="container" class="browser-style"></select>
+            <div class="row">
+                <select id="container" class="browser-style"></select>
+                <button id="containerOptionsToggle" class="gear-button browser-style"></button>
+            </div>
+            <div id="containerOptions" class="container hidden">
+                <div class="panel-formElements-item browser-style">
+                    <label class="title">Container properties to include:</label>
+                </div>
+                <div class="panel-formElements-item browser-style">
+                    <input id="useContainerId" type="checkbox" />
+                    <label for="useContainerId">Container ID</label>
+                </div>
+                <div class="panel-formElements-item browser-style">
+                    <input id="useContainerName" type="checkbox" />
+                    <label for="useContainerName">Name</label>
+                </div>
+                <!-- <div cl` -->
+            </div>
         </div>
         <div id="bookmarkFolder" class="folder folded">
             <div class="title">Bookmark</div>

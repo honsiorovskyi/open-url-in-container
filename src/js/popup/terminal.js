@@ -6,6 +6,15 @@ import { el } from '../dom.js'
 
 const TERMINAL_INPUT_ID = 'terminalInput'
 
-export function updateTerminalCommand(tab, containerName, signature) {
-    el(TERMINAL_INPUT_ID).value = `firefox-container --name '${containerName}' --signature '${signature}' '${tab.url}'`
+export function updateTerminalCommand(tab, containerProps, signature) {
+    let propParams = []
+    if (containerProps.id) {
+        propParams.push(`--id '${containerProps.id}'`)
+    }
+
+    if (containerProps.name) {
+        propParams.push(`--name '${containerProps.name}'`)
+    }
+
+    el(TERMINAL_INPUT_ID).value = `firefox-container ${propParams.join(' ')} --signature '${signature}' '${tab.url}'`
 }

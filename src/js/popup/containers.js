@@ -2,17 +2,21 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { el } from '../dom.js'
+import { el, toggle } from '../dom.js'
 
 const CONTAINER_ELEMENT_ID = 'container'
+const CONTAINER_OPTIONS_TOGGLE = 'containerOptionsToggle'
+const CONTAINER_OPTIONS = 'containerOptions'
+const USE_CONTAINER_ID = 'useContainerId'
+const USE_CONTAINER_NAME = 'useContainerName'
 
-export function updateContainerList(containers, selectedContainer) {
+function updateContainerList(containers, state) {
     const parent = el(CONTAINER_ELEMENT_ID)
     for (var i = 0; i < containers.length; i++) {
         const option = document.createElement('OPTION')
         option.value = containers[i].cookieStoreId
 
-        if (containers[i].cookieStoreId === selectedContainer.cookieStoreId) {
+        if (containers[i].cookieStoreId === state.selectedContainerId) {
             option.selected = true
         }
 
@@ -23,9 +27,35 @@ export function updateContainerList(containers, selectedContainer) {
     }
 }
 
-export function setupContainerChangeListener(containers, callback) {
+export function updateContainerOptions(state) {
+    el(USE_CONTAINER_ID).checked = state.useContainerId
+    el(USE_CONTAINER_NAME).checked = state.useContainerName
+
+    el(USE_CONTAINER_ID).disabled = state.useContainerId && !state.useContainerName
+    el(USE_CONTAINER_NAME).disabled = state.useContainerName && !state.useContainerId
+}
+
+export function updateContainerSelector(containers, state) {
+    updateContainerList(containers, state)
+    updateContainerOptions(state)
+}
+
+export function setupContainerSelector(containers, s) {
     el(CONTAINER_ELEMENT_ID).onchange = function (e) {
-        const container = containers.filter(c => c.cookieStoreId === e.target.value)[0]
-        callback(container.cookieStoreId, container.name)
+        const container = containers.find(c => c.cookieStoreId === e.target.value)
+        s.update({selectedContainerId: container.cookieStoreId})
+    }
+
+    el(USE_CONTAINER_ID).onchange = function(e) {
+        s.update({useContainerId: e.target.checked})
+    }
+
+    el(USE_CONTAINER_NAME).onchange = function(e) {
+        s.update({useContainerName: e.target.checked})
+    }
+
+    // pure UI
+    el(CONTAINER_OPTIONS_TOGGLE).onclick = function() {
+        toggle(CONTAINER_OPTIONS)
     }
 }

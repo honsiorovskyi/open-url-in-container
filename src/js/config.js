@@ -3,8 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 const SIGNING_KEY_NAME = 'signing_key'
-const POPUP_FOLDER_STATE_NAME = 'popup_folder_state'
-const MOST_RECENTLY_USED_CONTAINER_ID_NAME = 'most_recently_used_container_id'
+export const POPUP_FOLDER_STATE = 'popup_folder_state'
+export const CONTAINER_SELECTOR_STATE = 'container_selector_config'
 
 export async function getSigningKey() {
     return (await browser.storage.local.get(SIGNING_KEY_NAME))[SIGNING_KEY_NAME]
@@ -22,22 +22,12 @@ export async function setSigningKey(key, force) {
     })
 }
 
-export async function getPopupFolderState() {
-    return (await browser.storage.local.get(POPUP_FOLDER_STATE_NAME))[POPUP_FOLDER_STATE_NAME] || {}
+export async function restoreState(component, initialState = {}) {
+    return (await browser.storage.local.get(component))[component] || initialState
 }
 
-export async function setPopupFolderState(state) {
+export async function saveState(component, state) {
     await browser.storage.local.set({
-        [POPUP_FOLDER_STATE_NAME]: state
-    })
-}
-
-export async function getMostRecentlyUsedContainerId() {
-    return (await browser.storage.local.get(MOST_RECENTLY_USED_CONTAINER_ID_NAME))[MOST_RECENTLY_USED_CONTAINER_ID_NAME]
-}
-
-export async function setMostRecentlyUsedContainerId(id) {
-    await browser.storage.local.set({
-        [MOST_RECENTLY_USED_CONTAINER_ID_NAME]: id
+        [component]: state
     })
 }

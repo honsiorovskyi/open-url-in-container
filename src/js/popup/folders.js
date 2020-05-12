@@ -2,12 +2,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { getPopupFolderState, setPopupFolderState } from '../config.js'
+import { saveState, restoreState, POPUP_FOLDER_STATE } from '../config.js'
 import { State } from '../state.js'
 import { el } from '../dom.js'
 
 function updateFolderFoldingState({ newState, update }) { // eslint-disable-line no-unused-vars
-    setPopupFolderState(newState)
+    saveState(POPUP_FOLDER_STATE, newState)
 
     for (let id of Object.keys(update)) {
         if (newState[id]) {
@@ -33,14 +33,11 @@ function setupFolderFoldingListeners(s) {
 
 export async function setupFolderFolding() {
     // update folder state
-    const folderState = {
-        ...{
-            bookmarkFolder: false,
-            terminalFolder: false,
-            signatureFolder: false,
-        },
-        ...await getPopupFolderState(),
-    }
+    const folderState = await restoreState(POPUP_FOLDER_STATE, {
+        bookmarkFolder: false,
+        terminalFolder: false,
+        signatureFolder: false,
+    })
 
     updateFolderFoldingState({
         newState: folderState,
