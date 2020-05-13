@@ -2,13 +2,22 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { el, toggle } from '../dom.js'
+import { el, toggle, hide } from '../dom.js'
+import { generateKey } from '../security.js'
+import { getSigningKey, setSigningKey } from '../config.js'
 
 const CONTAINER_ELEMENT_ID = 'container'
 const CONTAINER_OPTIONS_TOGGLE = 'containerOptionsToggle'
 const CONTAINER_OPTIONS = 'containerOptions'
 const USE_CONTAINER_ID = 'useContainerId'
 const USE_CONTAINER_NAME = 'useContainerName'
+const SIGNING_KEY_TOGGLE = 'toggleSigningKey'
+const SIGNING_KEY_CONTAINER = 'signingKeyContainer'
+const SIGNING_KEY = 'signingKey'
+const REGENERATE_SIGNING_KEY = 'regenerateSigningKey'
+const SIGNING_KEY_REGENERATION_CONFIRMATION = 'signingKeyRegenerationConfirmation'
+const SIGNING_KEY_REGENERATION_CONFIRMATION_CONFIRM = 'signingKeyRegenerationConfirmationConfirm'
+const SIGNING_KEY_REGENERATION_CONFIRMATION_CANCEL = 'signingKeyRegenerationConfirmationCancel'
 
 function updateContainerList(containers, state) {
     const parent = el(CONTAINER_ELEMENT_ID)
@@ -35,6 +44,14 @@ export function updateContainerOptions(state) {
     el(USE_CONTAINER_NAME).disabled = state.useContainerName && !state.useContainerId
 }
 
+async function updateSigningKey() {
+    el(SIGNING_KEY).value = await getSigningKey()
+}
+
+async function regenerateSigningKey() {
+    await setSigningKey(generateKey(), true)
+}
+
 export function updateContainerSelector(containers, state) {
     updateContainerList(containers, state)
     updateContainerOptions(state)
@@ -54,8 +71,28 @@ export function setupContainerSelector(containers, s) {
         s.update({useContainerName: e.target.checked})
     }
 
+    el(SIGNING_KEY_REGENERATION_CONFIRMATION_CONFIRM).onclick = async function() {
+        await regenerateSigningKey()
+        s.update({}) // trigger an empty update to refresh links
+        updateSigningKey()
+        hide(SIGNING_KEY_REGENERATION_CONFIRMATION)
+    }
+
+    el(SIGNING_KEY_REGENERATION_CONFIRMATION_CANCEL).onclick = function() {
+        hide(SIGNING_KEY_REGENERATION_CONFIRMATION)
+    }
+
     // pure UI
     el(CONTAINER_OPTIONS_TOGGLE).onclick = function() {
         toggle(CONTAINER_OPTIONS)
+    }
+
+    el(SIGNING_KEY_TOGGLE).onclick = function() {
+        updateSigningKey()
+        toggle(SIGNING_KEY_CONTAINER)
+    }
+
+    el(REGENERATE_SIGNING_KEY).onclick = function() {
+        toggle(SIGNING_KEY_REGENERATION_CONFIRMATION)
     }
 }

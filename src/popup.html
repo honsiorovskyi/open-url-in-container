@@ -36,18 +36,31 @@
             flex-direction: row;
         }
 
-        #container {
+        #container,
+        #signingKey {
             flex-grow: 1;
         }
 
-        .gear-button {
+        .gear-button,
+        .regenerate-button {
             margin-left: 5px;
             width: 24px;
             height: 24px;
-            background-image: url('./icons/gear.svg');
             background-size: 50%;
             background-repeat: no-repeat;
             background-position: 50% 50%;
+        }
+
+        .gear-button {
+            background-image: url('./icons/gear.svg');
+        }
+
+        .regenerate-button {
+            background-image: url('./icons/regenerate.svg');
+        }
+
+        #toggleSigningKey {
+            margin-bottom: 0;
         }
 
         .draggable {
@@ -127,7 +140,7 @@
             </div>
             <div id="containerOptions" class="container hidden">
                 <div class="panel-formElements-item browser-style">
-                    <label class="title">Container properties to include:</label>
+                    <label class="title">Container properties to include in links:</label>
                 </div>
                 <div class="panel-formElements-item browser-style">
                     <input id="useContainerId" type="checkbox" />
@@ -137,15 +150,42 @@
                     <input id="useContainerName" type="checkbox" />
                     <label for="useContainerName">Name</label>
                 </div>
-                <!-- <div cl` -->
+                <div>
+                    <button id="toggleSigningKey" class="browser-style">Signing key</button>
+                    <div id="signingKeyContainer" class="hidden">
+                        <div>
+                            <p><strong>Warning!</strong>
+                                Exposing this key is potentially dangerous for your privacy.
+                                Please be sure you know what you're doing
+                                when using this key.
+                            </p>
+                        </div>
+                            <div class="row browser-style">
+                                <input id="signingKey" type="text" readonly class="browser-style">
+                                <button id="regenerateSigningKey" class="regenerate-button browser-style"></button>
+                            </div>
+                        <div id="signingKeyRegenerationConfirmation" class="container centered hidden">
+                            <div class="element">
+                                <label for="buttons"><strong>Warning!</strong>
+                                    If you continue, all your previously saved links and bookmarks
+                                    will start showing an ugly warning.
+                                    Do you really want to regenerate this key?
+                                </label>
+                            </div>
+                            <div class="element">
+                                <button id="signingKeyRegenerationConfirmationConfirm"
+                                    class="browser-style default">Regenerate</button>
+                                <button id="signingKeyRegenerationConfirmationCancel"
+                                    class="browser-style">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div id="bookmarkFolder" class="folder folded">
             <div class="title">Bookmark</div>
             <div class="content">
-                <!-- <div class="element">
-                        <label for="link">Drag this to bookmarks:</label>
-                    </div> -->
                 <div class="element container">
                     <div>
                         <!-- this empty div is needed for dragging to work - I don't know why -->
