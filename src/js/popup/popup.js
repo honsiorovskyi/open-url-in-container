@@ -15,6 +15,7 @@ import { getActiveTab } from '../tabs.js'
 import { generateSignature } from '../security.js'
 
 import { updateBookmarkLink, updateBookmarkConfirmation } from './bookmark.js'
+import { updateURL } from './url.js'
 import { updateTerminalCommand } from './terminal.js'
 import { updateSignatureCommand } from './signature.js'
 import { setupFolderFolding } from './folders.js'
@@ -33,6 +34,7 @@ async function updateLinks(containers, containerState) {
 
     updateBookmarkLink(tab, containerProps, signature)
     updateBookmarkConfirmation(tab, selectedContainer.name)
+    updateURL(tab, containerProps, signature)
     updateTerminalCommand(tab, containerProps, signature)
     updateSignatureCommand(signature)
 }

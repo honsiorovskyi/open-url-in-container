@@ -33,11 +33,16 @@ function setupFolderFoldingListeners(s) {
 
 export async function setupFolderFolding() {
     // update folder state
-    const folderState = await restoreState(POPUP_FOLDER_STATE, {
+    const initialState = {
         bookmarkFolder: false,
+        urlFolder: false,
         terminalFolder: false,
         signatureFolder: false,
-    })
+    }
+    const folderState = {
+        ...initialState,
+        ...await restoreState(POPUP_FOLDER_STATE, initialState),
+    }
 
     updateFolderFoldingState({
         newState: folderState,
