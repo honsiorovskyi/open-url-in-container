@@ -5,9 +5,9 @@
 
 import { parseBookmarkParams, parseOpenerParams } from './parsers.js'
 import { getSigningKey } from './config.js'
-import { verifySignature } from './security.js'
 import { prepareContainer } from './containers.js'
 import { newTab, closeCurrentTab } from './tabs.js'
+import { SignatureError } from './params.js'
 
 function error(e) {
     console.error(e)
@@ -18,6 +18,7 @@ function error(e) {
 
 function changeFavicon(favIconUrl) {
     const dataUrlMatch = favIconUrl.match(/data:(.+)[;,]/)
+    console.log('---', favIconUrl)
     if (!dataUrlMatch) {
         console.warn('favIconUrl is not a data URL, skipping')
         return
@@ -41,11 +42,11 @@ function requestConfirmation(params) {
     document.getElementById('securityConfirmationUrl').textContent = params.url
     document.getElementById('securityConfirmationContainer').classList.remove('hidden')
 
-    document.getElementById('securityConfirmationConfirm').onclick = function() {
+    document.getElementById('securityConfirmationConfirm').onclick = function () {
         openTabInContainer(params)
     }
-	
-    document.getElementById('securityConfirmationGoBack').onclick = async function() {
+
+    document.getElementById('securityConfirmationGoBack').onclick = async function () {
         if (window.history.length > 1) {
             window.history.back()
         } else {
@@ -58,8 +59,8 @@ async function main() {
     try {
         // setup favicon if possible
         const bookmarkParams = parseBookmarkParams(window.location.search)
-        if (bookmarkParams.favIconUrl) {
-            changeFavicon(bookmarkParams.favIconUrl)
+        if (bookmarkParams.get('favIconUrl')) {
+            changeFavicon(bookmarkParams.get('favIconUrl'))
         }
 
         // get extension parameters
@@ -67,12 +68,16 @@ async function main() {
         const key = await getSigningKey()
 
         // verify input signature to prevent clickjacking
-        const secure = await verifySignature({key}, params)
+        try {
+            await params.verifySignature(key)
+        } catch (e) {
+            if (e instanceof SignatureError) {
+                // require user confirmation if signature verification failed
+                requestConfirmation(params)
+                return
+            }
 
-        // require user confirmation if signature verification failed
-        if (!secure) {
-            requestConfirmation(params)
-            return
+            throw e
         }
 
         // finally, open a new tab

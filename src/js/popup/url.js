@@ -6,16 +6,6 @@ import { el } from '../dom.js'
 
 const URL_INPUT_ID = 'urlInput'
 
-export function updateURL(tab, containerProps, signature) {
-    const qs = new URLSearchParams()
-    qs.set('url', tab.url)
-    qs.set('signature', signature)
-
-    for (let prop of Object.keys(containerProps)) {
-        if (containerProps[prop]) {
-            qs.set(prop, containerProps[prop])
-        }
-    }
-
+export function updateURL(qs) {
     el(URL_INPUT_ID).value = `ext+container:${qs.toString()}`
 }

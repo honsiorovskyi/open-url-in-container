@@ -12,7 +12,7 @@ import {
 import { State } from '../state.js'
 import { hide, show } from '../dom.js'
 import { getActiveTab } from '../tabs.js'
-import { generateSignature } from '../security.js'
+import { Params } from '../params.js'
 
 import { updateBookmarkLink, updateBookmarkConfirmation } from './bookmark.js'
 import { updateURL } from './url.js'
@@ -23,20 +23,24 @@ import { updateContainerSelector, updateContainerOptions, setupContainerSelector
 
 async function updateLinks(containers, containerState) {
     const selectedContainer = containers.find(c => c.cookieStoreId === containerState.selectedContainerId)
-    const containerProps = {
-        id: containerState.useContainerId ? selectedContainer.cookieStoreId : undefined,
-        name: containerState.useContainerName ? selectedContainer.name : undefined,
-    }
 
     const tab = await getActiveTab()
-    const signingKey = await getSigningKey()
-    const signature = await generateSignature({ key: signingKey }, containerProps)
+    const params = new Params({
+        id: containerState.useContainerId ? selectedContainer.cookieStoreId : undefined,
+        name: containerState.useContainerName ? selectedContainer.name : undefined,
+        url: tab.url,
+    })
 
-    updateBookmarkLink(tab, containerProps, signature)
+    const signingKey = await getSigningKey()
+    console.log(signingKey)
+    await params.sign(signingKey)
+    console.log(params.toString())
+
+    updateBookmarkLink(tab, params)
     updateBookmarkConfirmation(tab, selectedContainer.name)
-    updateURL(tab, containerProps, signature)
-    updateTerminalCommand(tab, containerProps, signature)
-    updateSignatureCommand(signature)
+    updateURL(params)
+    updateTerminalCommand(params)
+    updateSignatureCommand(params)
 }
 
 async function main() {
@@ -59,7 +63,7 @@ async function main() {
     }
 
     // create container state manager
-    const containerStateManager = new State(initialContainerState, function({newState}) {
+    const containerStateManager = new State(initialContainerState, function ({ newState }) {
         updateLinks(containers, newState)
         updateContainerOptions(newState)
         saveState(CONTAINER_SELECTOR_STATE, newState)

@@ -2,6 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+const DEFAULT_COLOR = 'yellow'
+const DEFAULT_ICON = 'fingerprint'
+
 export async function getContainerByName(name) {
     let containers = await browser.contextualIdentities.query({
         name: name,
@@ -29,8 +32,8 @@ export function lookupContainer({ id, name }) {
 export function createContainer({ name, color, icon }) {
     return browser.contextualIdentities.create({
         name: name,
-        color: color,
-        icon: icon,
+        color: color || DEFAULT_COLOR,
+        icon: icon || DEFAULT_ICON,
     })
 }
 

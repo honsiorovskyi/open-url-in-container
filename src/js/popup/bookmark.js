@@ -31,33 +31,23 @@ function createLink(favIconUrl, title, url, callback) {
         .replaceChild(link, el(LINK_ELEMENT_ID))
 }
 
-export function updateBookmarkConfirmation(tab, containerName) {
+export function updateBookmarkConfirmation(tab, qs, containerName) {
     el(BOOKMARK_CONFIRMATION_CANCEL_ID).onclick = function () { hide(BOOKMARK_CONFIRMATION_ID) }
     el(BOOKMARK_CONFIRMATION_CONFIRM_ID).onclick = async function () {
         hide(BOOKMARK_CONFIRMATION_ID)
         await browser.bookmarks.create({
             title: `[${containerName}] ${tab.title}`,
-            url: tab.url,
+            url: `ext+container:${qs.toString()}`,
         })
     }
 }
 
-export function updateBookmarkLink(tab, containerProps, signature) {
-    const qs = new URLSearchParams()
-    qs.set('favIconUrl', tab.favIconUrl)
+export function updateBookmarkLink(tab, qs) {
+    const bookmarkQS = new URLSearchParams()
+    bookmarkQS.set('favIconUrl', tab.favIconUrl)
 
-    const hashQs = new URLSearchParams()
-    hashQs.set('url', tab.url)
-    hashQs.set('signature', signature)
-
-    for (let prop of Object.keys(containerProps)) {
-        if (containerProps[prop]) {
-            hashQs.set(prop, containerProps[prop])
-        }
-    }
-
-    const encodedHash = encodeURIComponent(`ext+container:${hashQs.toString()}`)
-    const url = browser.runtime.getURL(`/opener.html?${qs.toString()}#${encodedHash}`)
+    const encodedHash = encodeURIComponent(`ext+container:${qs.toString()}`)
+    const url = browser.runtime.getURL(`/opener.html?${bookmarkQS.toString()}#${encodedHash}`)
 
     createLink(tab.favIconUrl, tab.title, url, function (e) {
         e.preventDefault()

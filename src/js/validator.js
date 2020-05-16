@@ -4,7 +4,7 @@
 
 export function parseQueryString(query, schema) {
     let searchParams = new URLSearchParams(query)
-    let params = {}
+    let params = new URLSearchParams()
 
     // validate each key from the schema
     // except the __validators one
@@ -24,7 +24,7 @@ export function parseQueryString(query, schema) {
             continue
         }
 
-        params[k] = param
+        params.set(k, param)
     }
 
     // apply global validators
@@ -119,11 +119,22 @@ export function oneOf(vals) {
     }
 }
 
+export function oneOfOrEmpty(vals) {
+    const oneOfFunc = oneOf(vals)
+    return function(p, name) {
+        if (isEmpty(p)) {
+            return p
+        }
+
+        return oneOfFunc(p, name)
+    }
+}
+
 export function atLeastOneRequired(requiredParams) {
     return function(params) {
         let valid = false
         for (let p of requiredParams) {
-            if (!isEmpty(params[p])) {
+            if (!isEmpty(params.get(p))) {
                 valid = true
                 break
             }

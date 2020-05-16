@@ -4,14 +4,15 @@
 
 import {
     parseQueryString,
-    fallback,
-    oneOf,
     required,
     url,
     integer,
     boolean,
     atLeastOneRequired,
+    oneOfOrEmpty,
 } from './validator.js'
+
+import { Params } from './params.js'
 
 const bookmarkParamsSchema = {
     favIconUrl: [url],
@@ -43,14 +44,15 @@ const allowedContainerIcons = [
     'chill',
 ]
 
-
 const openerParamsSchema = {
+    // signature
+    signature: [],
+
     // container params
     id: [],
     name: [],
-    color: [fallback('yellow'), oneOf(allowedContainerColors)],
-    icon: [fallback('fingerprint'), oneOf(allowedContainerIcons)],
-    signature: [],
+    color: [oneOfOrEmpty(allowedContainerColors)],
+    icon: [oneOfOrEmpty(allowedContainerIcons)],
 
     // url params
     url: [required, url],
@@ -78,7 +80,7 @@ export function parseOpenerParams(encodedHash) {
         }
 
         const queryString = hash.substr(hashPrefix.length)
-        return parseQueryString(queryString, openerParamsSchema)
+        return new Params(parseQueryString(queryString, openerParamsSchema).toString())
     } catch (e) {
         throw new Error(`parsing parameters: ${e}`)
     }

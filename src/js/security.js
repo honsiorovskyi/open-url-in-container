@@ -1,3 +1,5 @@
+import { hex2array, array2hex } from './hex.js'
+
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -11,34 +13,39 @@ export async function sha256(value) {
     return hashHex
 }
 
-function serializeData(id, name, key) {
-    return `${id || ''}${name || ''}${key}`
+export async function verifySignature(rawHexKey, signature, data) {
+    const key = await importKey(rawHexKey)
+    const signatureArray = hex2array(signature)
+    const dataArray = new TextEncoder().encode(data)
+    return await window.crypto.subtle.verify('HMAC', key, signatureArray, dataArray)
 }
 
-export async function verifySignature({ key }, { signature, id, name }) {
-    if (!key) {
-        throw new Error('key cannot be empty')
-    }
-
-    const digest = await sha256(serializeData(id, name, key))
-    if (digest === signature) {
-        return true
-    }
-
-    return false
+export async function generateSignature(rawHexKey, data) {
+    const key = await importKey(rawHexKey)
+    const encoder = new TextEncoder()
+    const dataArray = encoder.encode(data)
+    const signatureArray = await window.crypto.subtle.sign('HMAC', key, dataArray)
+    return array2hex(signatureArray)
 }
 
-export function generateSignature({ key }, { id, name }) {
-    if (!key) {
-        throw new Error('key cannot be empty')
-    }
-
-    return sha256(serializeData(id, name, key))
+export async function generateKey() {
+    return await exportKey(await window.crypto.subtle.generateKey(
+        { name: 'HMAC', 'hash': 'SHA-256', length: 256 },
+        true,
+        ['sign', 'verify']
+    ))
 }
 
-export function generateKey() {
-    var byteArray = new Uint8Array(24)
-    crypto.getRandomValues(byteArray)
-    const byteString = String.fromCharCode(...byteArray)
-    return btoa(byteString)
+export async function importKey(rawHexKey) {
+    const rawKey = hex2array(rawHexKey)
+    return await window.crypto.subtle.importKey('raw', rawKey,
+        { name: 'HMAC', 'hash': 'SHA-256', length: 256 },
+        true,
+        ['sign', 'verify']
+    )
 }
+
+export async function exportKey(key) {
+    return array2hex(await window.crypto.subtle.exportKey('raw', key))
+}
+

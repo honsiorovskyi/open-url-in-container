@@ -7,6 +7,7 @@ import { setSigningKey } from './config.js'
 
 async function handleInstalled() {
     const key = generateKey()
+    console.log('install', key)
     try {
         await setSigningKey(key)
     } catch (e) {

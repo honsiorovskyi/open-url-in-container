@@ -48,7 +48,6 @@
             "property"
         ],
         "dot-notation": "error",
-        "no-return-await": "error",
         "no-sequences": "error",
         "no-throw-literal": "error",
         "no-unused-expressions": "error",

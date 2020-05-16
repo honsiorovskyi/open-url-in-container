@@ -49,7 +49,7 @@ async function updateSigningKey() {
 }
 
 async function regenerateSigningKey() {
-    await setSigningKey(generateKey(), true)
+    await setSigningKey(await generateKey(), true)
 }
 
 export function updateContainerSelector(containers, state) {

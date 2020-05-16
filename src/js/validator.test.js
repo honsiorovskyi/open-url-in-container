@@ -11,7 +11,9 @@ import {
     fallback,
     oneOf,
     atLeastOneRequired,
+    oneOfOrEmpty,
 } from './validator.js'
+import { Params } from './params.js'
 
 describe('validator.js', () => {
     describe('validator.js/parser', () => {
@@ -23,12 +25,7 @@ describe('validator.js', () => {
                 b: [required],
                 c: [url],
                 d: [boolean],
-            })).to.deep.equal({
-                a: 5,
-                b: '6',
-                c: 'https://foo.com/',
-                d: true,
-            })
+            }).toString()).to.equal('a=5&b=6&c=https%3A%2F%2Ffoo.com%2F&d=true')
         })
 
         it('should fail on validators failure', () => {
@@ -42,7 +39,7 @@ describe('validator.js', () => {
         it('should ignore __validators property', () => {
             expect(parseQueryString(data, {
                 __validators: [],
-            })).to.deep.equal({})
+            }).toString()).to.equal('')
         })
 
         it('should apply __validators', () => {
@@ -50,7 +47,7 @@ describe('validator.js', () => {
                 a: [],
                 f: [],
                 __validators: [atLeastOneRequired('a', 'f')]
-            })).to.deep.equal({ a: '5' })
+            }).toString()).to.equal('a=5')
 
             expect(() => {
                 parseQueryString(data, {
@@ -64,7 +61,7 @@ describe('validator.js', () => {
         it('ignore invalid string', () => {
             expect(parseQueryString('&=?=abc&a=5', {
                 __validators: [],
-            })).to.deep.equal({})
+            }).toString()).to.equal('')
         })
     })
 
@@ -186,18 +183,37 @@ describe('validator.js', () => {
         })
     })
 
+    describe('validator.js/oneOfOrEmpty', () => {
+        it('should pass if the parameter is in the preconfigured list', () => {
+            expect(oneOf(['a', 'b'])('a')).to.equal('a')
+            expect(oneOf(['a', 'b'])('b')).to.equal('b')
+            expect(oneOf(['a'])('a')).to.equal('a')
+        })
+
+        it('should pass if the parameter is empty', () => {
+            expect(oneOfOrEmpty(['a', 'b'])('')).to.equal('')
+        })
+
+        it('should throw if the parameter is not in the precofigured list', () => {
+            expect(() => { oneOf(['a', 'b'])('c') }).to.throw()
+            expect(() => { oneOf([])('a') }).to.throw()
+        })
+    })
+
     describe('validator.js/atLeastOneRequired', () => {
+        const v = atLeastOneRequired(['a', 'b'])
+
         it('should pass when at least one parameter is present', () => {
-            expect(atLeastOneRequired(['a', 'b'])({ a: 5, b: null })).to.deep.equal({ a: 5, b: null })
-            expect(atLeastOneRequired(['a', 'b'])({ a: null, b: 5 })).to.deep.equal({ a: null, b: 5 })
-            expect(atLeastOneRequired(['a', 'b'])({ a: 5, b: 5 })).to.deep.equal({ a: 5, b: 5 })
-            expect(atLeastOneRequired(['a', 'b'])({ a: 5 })).to.deep.equal({ a: 5 })
+            expect(() => { v(new Params({ a: 5, b: null })) }).to.not.throw()
+            expect(() => { v(new Params({ a: null, b: 5 })) }).to.not.throw()
+            expect(() => { v(new Params({ a: 5, b: 5 })) }).to.not.throw()
+            expect(() => { v(new Params({ a: 5 })) }).to.not.throw()
         })
 
         it('should fail when none of the parameters is present', () => {
-            expect(() => { atLeastOneRequired(['a', 'b'])({ c: 5 }) }).to.throw()
-            expect(() => { atLeastOneRequired(['a', 'b'])({ a: null, b: '', c: 5 }) }).to.throw()
-            expect(() => { atLeastOneRequired(['a', 'b'])({ a: null, c: 5 }) }).to.throw()
+            expect(() => { v(new Params({ c: 5 })) }).to.throw()
+            expect(() => { v(new Params({ a: null, b: '', c: 5 })) }).to.throw()
+            expect(() => { v(new Params({ a: null, c: 5 })) }).to.throw()
         })
     })
 })
