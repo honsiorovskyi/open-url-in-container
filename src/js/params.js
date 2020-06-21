@@ -1,71 +1,85 @@
 import { generateSignature, verifySignature } from './security.js'
 
-export class SignatureError extends Error {}
+export class SignatureError extends Error { }
 
-export class Params extends URLSearchParams {
-    constructor(params) {   
-        if (params instanceof Object) {
-            // filter empty values
-            const filteredParams = {}
-            for (let k of Object.keys(params)) {
-                if (!params[k]) {
-                    continue
-                }
+export class OpenerParameters {
+    constructor({
+        id,
+        name,
+        color,
+        icon,
+        url,
+        index,
+        pinned,
+        openInReaderMode,
+    }) {
+        this._data = {
+            // container properties
+            id: id,
+            name: name,
+            color: color,
+            icon: icon,
 
-                filteredParams[k] = params[k]
-            }
-            super(filteredParams)
-            return
+            // tab properties
+            url: url,
+            index: index,
+            pinned: pinned,
+            openInReaderMode: openInReaderMode,
         }
-        super(...arguments)
     }
-
-    // signature
-    get signature() { return this.get('signature') }
 
     // container properties
-    get id() { return this.get('id') }
-    get name() { return this.get('name') }
-    get color() { return this.get('color') }
-    get icon() { return this.get('icon') }
+    get id() { return this._data.id }
+    get name() { return this._data.name }
+    get color() { return this._data.color }
+    get icon() { return this._data.icon }
 
-    // tab properties
-    get url() { return this.get('url') }
-    get index() { return this.get('index') }
-    get pinned() { return this.get('pinned') }
-    get openInReaderMode() { return this.get('openInReaderMode') }
+    // tab propertiese
+    get url() { return this._data.url }
+    get index() { return this._data.index }
+    get pinned() { return this._data.pinned }
+    get openInReaderMode() { return this._data.openInReaderMode }
 
-    setSignature(signature) { this.set('signature', signature) }
+    toQueryString() {
+        const qs = new URLSearchParams()
 
-    async sign(key) {
-        if (this.signature) {
-            throw new Error('query string already contains signature')
+        for (let k of Object.keys(this._data)) {
+            if (this._data[k]) {
+                qs.set(k, this._data[k])
+            }
         }
-        this.sort()
-        this.setSignature(await generateSignature(key, this.toString()))
+
+        qs.sort()
+
+        return qs
     }
 
-    async verifySignature(key) {
-        if (!this.signature) {
-            throw new SignatureError('signature not found')
+    async sign(key) {
+        const qs = this.toQueryString()
+        const signature = await generateSignature(key, qs.toString())
+        qs.set('signature', signature)
+
+        return {
+            queryString: qs,
+            signature: signature,
         }
+    }
 
-        const tempQS = new URLSearchParams()
-        console.log('dfdf', this.signature)
-        for (let [k, v] of this) {
-            if (k === 'signature') {
-                continue
-            }
+    async verify(key, signature) {
+        const qs = this.toQueryString()
 
-            tempQS.set(k, v)
-        }
-
-        tempQS.sort()
-        console.log('dfdf', this.signature, key, tempQS.toString())
-
-
-        if (!await verifySignature(key, this.signature, tempQS.toString())) {
+        if (!await verifySignature(key, signature, qs.toString())) {
             throw new SignatureError('signature invalid')
         }
+    }
+}
+
+export class SignedQueryString extends URLSearchParams {
+    set signature(signature) {
+        this.set(signature)
+    }
+
+    get signature() {
+        return this.get('signature')
     }
 }

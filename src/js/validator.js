@@ -2,9 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-export function parseQueryString(query, schema) {
-    let searchParams = new URLSearchParams(query)
-    let params = new URLSearchParams()
+export function sanitizeURLSearchParams(qs, schema) {
+    let params = {}
 
     // validate each key from the schema
     // except the __validators one
@@ -14,7 +13,7 @@ export function parseQueryString(query, schema) {
         }
 
         // apply each validator
-        let param = searchParams.get(k)
+        let param = qs.get(k)
         for (let v of schema[k]) {
             param = v(param, k)
         }
@@ -24,7 +23,7 @@ export function parseQueryString(query, schema) {
             continue
         }
 
-        params.set(k, param)
+        params[k] = param
     }
 
     // apply global validators
@@ -134,7 +133,7 @@ export function atLeastOneRequired(requiredParams) {
     return function(params) {
         let valid = false
         for (let p of requiredParams) {
-            if (!isEmpty(params.get(p))) {
+            if (!isEmpty(params[p])) {
                 valid = true
                 break
             }

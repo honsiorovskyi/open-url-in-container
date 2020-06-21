@@ -12,7 +12,7 @@ import {
 import { State } from '../state.js'
 import { hide, show } from '../dom.js'
 import { getActiveTab } from '../tabs.js'
-import { Params } from '../params.js'
+import { OpenerParameters } from '../params.js'
 
 import { updateBookmarkLink, updateBookmarkConfirmation } from './bookmark.js'
 import { updateURL } from './url.js'
@@ -23,24 +23,20 @@ import { updateContainerSelector, updateContainerOptions, setupContainerSelector
 
 async function updateLinks(containers, containerState) {
     const selectedContainer = containers.find(c => c.cookieStoreId === containerState.selectedContainerId)
-
     const tab = await getActiveTab()
-    const params = new Params({
-        id: containerState.useContainerId ? selectedContainer.cookieStoreId : undefined,
-        name: containerState.useContainerName ? selectedContainer.name : undefined,
+
+    const params = new OpenerParameters({
         url: tab.url,
+        id: containerState.useContainerId ? selectedContainer.cookieStoreId : null,
+        name: containerState.useContainerName ? selectedContainer.name : null,
     })
+    const {queryString, signature} = await params.sign(await getSigningKey())
 
-    const signingKey = await getSigningKey()
-    console.log(signingKey)
-    await params.sign(signingKey)
-    console.log(params.toString())
-
-    updateBookmarkLink(tab, params)
-    updateBookmarkConfirmation(tab, selectedContainer.name)
-    updateURL(params)
-    updateTerminalCommand(params)
-    updateSignatureCommand(params)
+    updateBookmarkLink(tab, queryString)
+    updateBookmarkConfirmation(tab, queryString, selectedContainer.name)
+    updateURL(queryString)
+    updateTerminalCommand(params, signature)
+    updateSignatureCommand(signature)
 }
 
 async function main() {

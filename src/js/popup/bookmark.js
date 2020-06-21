@@ -11,6 +11,12 @@ const BOOKMARK_CONFIRMATION_ID = 'bookmark-confirmation'
 const BOOKMARK_CONFIRMATION_CONFIRM_ID = 'bookmark-confirmation-confirm'
 const BOOKMARK_CONFIRMATION_CANCEL_ID = 'bookmark-confirmation-cancel'
 
+function bookmarkUrl(tab, qs) {
+    const bookmarkQS = new URLSearchParams({'favIconUrl': tab.favIconUrl})
+    const encodedHash = encodeURIComponent(`ext+container:${qs.toString()}`)
+    return browser.runtime.getURL(`/opener.html?${bookmarkQS.toString()}#${encodedHash}`)
+}
+
 function createLink(favIconUrl, title, url, callback) {
     const link = document.createElement('A')
     link.id = LINK_ELEMENT_ID
@@ -37,19 +43,13 @@ export function updateBookmarkConfirmation(tab, qs, containerName) {
         hide(BOOKMARK_CONFIRMATION_ID)
         await browser.bookmarks.create({
             title: `[${containerName}] ${tab.title}`,
-            url: `ext+container:${qs.toString()}`,
+            url: bookmarkUrl(tab, qs),
         })
     }
 }
 
 export function updateBookmarkLink(tab, qs) {
-    const bookmarkQS = new URLSearchParams()
-    bookmarkQS.set('favIconUrl', tab.favIconUrl)
-
-    const encodedHash = encodeURIComponent(`ext+container:${qs.toString()}`)
-    const url = browser.runtime.getURL(`/opener.html?${bookmarkQS.toString()}#${encodedHash}`)
-
-    createLink(tab.favIconUrl, tab.title, url, function (e) {
+    createLink(tab.favIconUrl, tab.title, bookmarkUrl(tab, qs), function (e) {
         e.preventDefault()
         toggle(BOOKMARK_CONFIRMATION_ID)
     })

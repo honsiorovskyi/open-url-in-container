@@ -7,7 +7,7 @@ import { parseBookmarkParams, parseOpenerParams } from './parsers.js'
 import { getSigningKey } from './config.js'
 import { prepareContainer } from './containers.js'
 import { newTab, closeCurrentTab } from './tabs.js'
-import { SignatureError } from './params.js'
+import { SignatureError, OpenerParameters } from './params.js'
 
 function error(e) {
     console.error(e)
@@ -18,7 +18,6 @@ function error(e) {
 
 function changeFavicon(favIconUrl) {
     const dataUrlMatch = favIconUrl.match(/data:(.+)[;,]/)
-    console.log('---', favIconUrl)
     if (!dataUrlMatch) {
         console.warn('favIconUrl is not a data URL, skipping')
         return
@@ -59,21 +58,21 @@ async function main() {
     try {
         // setup favicon if possible
         const bookmarkParams = parseBookmarkParams(window.location.search)
-        if (bookmarkParams.get('favIconUrl')) {
-            changeFavicon(bookmarkParams.get('favIconUrl'))
+        if (bookmarkParams.favIconUrl) {
+            changeFavicon(bookmarkParams.favIconUrl)
         }
 
         // get extension parameters
-        const params = parseOpenerParams(window.location.hash)
-        const key = await getSigningKey()
+        const parsedParams = parseOpenerParams(window.location.hash)
+        const openerParams = new OpenerParameters(parsedParams)
 
         // verify input signature to prevent clickjacking
         try {
-            await params.verifySignature(key)
+            await openerParams.verify(await getSigningKey(), parsedParams.signature)
         } catch (e) {
             if (e instanceof SignatureError) {
                 // require user confirmation if signature verification failed
-                requestConfirmation(params)
+                requestConfirmation(openerParams)
                 return
             }
 
@@ -81,7 +80,7 @@ async function main() {
         }
 
         // finally, open a new tab
-        openTabInContainer(params)
+        openTabInContainer(openerParams)
     } catch (e) {
         error(e)
         return

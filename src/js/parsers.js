@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import {
-    parseQueryString,
+    sanitizeURLSearchParams,
     required,
     url,
     integer,
@@ -12,13 +12,12 @@ import {
     oneOfOrEmpty,
 } from './validator.js'
 
-import { Params } from './params.js'
+const customProtocolPrefix = 'ext+container:'
 
 const bookmarkParamsSchema = {
     favIconUrl: [url],
 }
 
-const hashPrefix = '#ext+container:'
 const allowedContainerColors = [
     'blue',
     'turquoise',
@@ -66,22 +65,24 @@ const openerParamsSchema = {
 
 export function parseBookmarkParams(qs) {
     try {
-        return parseQueryString(qs, bookmarkParamsSchema)
+        return sanitizeURLSearchParams(new URLSearchParams(qs), bookmarkParamsSchema)
     } catch (e) {
         return {}
     }
 }
 
-export function parseOpenerParams(encodedHash) {
-    try {
-        const hash = decodeURIComponent(encodedHash)
-        if (!hash.startsWith(hashPrefix)) {
-            throw new Error('invalid parameters scheme')
-        }
-
-        const queryString = hash.substr(hashPrefix.length)
-        return new Params(parseQueryString(queryString, openerParamsSchema).toString())
-    } catch (e) {
-        throw new Error(`parsing parameters: ${e}`)
+export function parseOpenerParams(rawHash) {
+    if (rawHash[0] != '#') {
+        throw new Error('not a valid location hash')
     }
+
+    const uri = decodeURIComponent(rawHash.substring(1))
+
+    if (!uri.startsWith(customProtocolPrefix)) {
+        throw new Error('unknown URI protocol')
+    }
+
+    const qs = new URLSearchParams(uri.substring(customProtocolPrefix.length))
+    
+    return sanitizeURLSearchParams(qs, openerParamsSchema)
 }

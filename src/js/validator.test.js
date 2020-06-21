@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import {
-    parseQueryString,
+    sanitizeURLSearchParams,
     required,
     url,
     integer,
@@ -13,44 +13,48 @@ import {
     atLeastOneRequired,
     oneOfOrEmpty,
 } from './validator.js'
-import { Params } from './params.js'
 
 describe('validator.js', () => {
     describe('validator.js/parser', () => {
-        let data = 'a=5&b=6&c=foo.com&d=yes&__validators=abc'
+        let data = new URLSearchParams('a=5&b=6&c=foo.com&d=yes&__validators=abc')
 
         it('should apply validators to values', () => {
-            expect(parseQueryString(data, {
+            expect(sanitizeURLSearchParams(data, {
                 a: [required, integer],
                 b: [required],
                 c: [url],
                 d: [boolean],
-            }).toString()).to.equal('a=5&b=6&c=https%3A%2F%2Ffoo.com%2F&d=true')
+            })).to.deep.equal({
+                a: 5,
+                b: '6',
+                c: 'https://foo.com/',
+                d: true,
+            })
         })
 
         it('should fail on validators failure', () => {
             expect(() => {
-                parseQueryString(data, {
+                sanitizeURLSearchParams(data, {
                     f: [required],
                 })
             }).to.throw()
         })
 
         it('should ignore __validators property', () => {
-            expect(parseQueryString(data, {
+            expect(sanitizeURLSearchParams(data, {
                 __validators: [],
-            }).toString()).to.equal('')
+            })).to.deep.equal({})
         })
 
         it('should apply __validators', () => {
-            expect(parseQueryString(data, {
+            expect(sanitizeURLSearchParams(data, {
                 a: [],
                 f: [],
                 __validators: [atLeastOneRequired('a', 'f')]
-            }).toString()).to.equal('a=5')
+            })).to.deep.equal({ a: '5' })
 
             expect(() => {
-                parseQueryString(data, {
+                sanitizeURLSearchParams(data, {
                     f: [],
                     g: [],
                     __validators: [atLeastOneRequired('f', 'g')]
@@ -59,9 +63,9 @@ describe('validator.js', () => {
         })
 
         it('ignore invalid string', () => {
-            expect(parseQueryString('&=?=abc&a=5', {
+            expect(sanitizeURLSearchParams('&=?=abc&a=5', {
                 __validators: [],
-            }).toString()).to.equal('')
+            })).to.deep.equal({})
         })
     })
 
@@ -204,16 +208,16 @@ describe('validator.js', () => {
         const v = atLeastOneRequired(['a', 'b'])
 
         it('should pass when at least one parameter is present', () => {
-            expect(() => { v(new Params({ a: 5, b: null })) }).to.not.throw()
-            expect(() => { v(new Params({ a: null, b: 5 })) }).to.not.throw()
-            expect(() => { v(new Params({ a: 5, b: 5 })) }).to.not.throw()
-            expect(() => { v(new Params({ a: 5 })) }).to.not.throw()
+            expect(() => { v({ a: 5, b: null }) }).to.not.throw()
+            expect(() => { v({ a: null, b: 5 }) }).to.not.throw()
+            expect(() => { v({ a: 5, b: 5 }) }).to.not.throw()
+            expect(() => { v({ a: 5 }) }).to.not.throw()
         })
 
         it('should fail when none of the parameters is present', () => {
-            expect(() => { v(new Params({ c: 5 })) }).to.throw()
-            expect(() => { v(new Params({ a: null, b: '', c: 5 })) }).to.throw()
-            expect(() => { v(new Params({ a: null, c: 5 })) }).to.throw()
+            expect(() => { v({ c: 5 }) }).to.throw()
+            expect(() => { v({ a: null, b: '', c: 5 }) }).to.throw()
+            expect(() => { v({ a: null, c: 5 }) }).to.throw()
         })
     })
 })
