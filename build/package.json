@@ -9,8 +9,8 @@
     },
     "license": "MPL-2.0",
     "scripts": {
-        "lint": "eslint -c .eslintrc.json --ignore-pattern ../src/lib --fix ../src",
-        "build": "web-ext build --overwrite-dest --source-dir ../src",
+        "lint": "eslint -c .eslintrc.json --ignore-pattern ../src/tests/lib --fix ../src",
+        "build": "web-ext build --overwrite-dest --source-dir ../src --ignore-files ../src/tests",
         "start": "web-ext run --source-dir ../src"
     },
     "devDependencies": {

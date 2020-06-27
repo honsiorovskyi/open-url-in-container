@@ -12,7 +12,7 @@ import {
     oneOf,
     atLeastOneRequired,
     oneOfOrEmpty,
-} from './validator.js'
+} from '../js/validator.js'
 
 describe('validator.js', () => {
     describe('validator.js/parser', () => {

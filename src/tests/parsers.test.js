@@ -1,4 +1,4 @@
-import { parseOpenerParams } from './parsers.js'
+import { parseOpenerParams } from '../js/parsers.js'
 
 describe('parsers.js', () => {
     const hashString = function (params) {

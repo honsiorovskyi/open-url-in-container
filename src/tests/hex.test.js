@@ -1,4 +1,4 @@
-import { hex2array, array2hex } from './hex.js'
+import { hex2array, array2hex } from '../js/hex.js'
 
 describe('hex.js', () => {
     describe('hex.js/hex2array', () => {
