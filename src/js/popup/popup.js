@@ -26,14 +26,25 @@ import {
     setupContainerSelector
 } from './containers.js'
 
+function getHostname(url) {
+    return new URL(url).hostname
+}
+
 async function updateLinks(containers, containerState) {
     const selectedContainer = containers.find(c => c.cookieStoreId === containerState.selectedContainerId)
     const tab = await getActiveTab()
 
+    const containerProps = containerState.useHostnameForContainerName ?
+        {
+            name: getHostname(tab.url),
+        } : {
+            id: containerState.useContainerId ? selectedContainer.cookieStoreId : null,
+            name: containerState.useContainerName ? selectedContainer.name : null,
+        }
+
     const params = new OpenerParameters({
         url: tab.url,
-        id: containerState.useContainerId ? selectedContainer.cookieStoreId : null,
-        name: containerState.useContainerName ? selectedContainer.name : null,
+        ...containerProps,
     })
     const { queryString, signature } = await params.sign(await getSigningKey())
 
@@ -52,6 +63,7 @@ async function main() {
         selectedContainerId: null,
         useContainerId: true,
         useContainerName: false,
+        useHostnameForContainerName: false,
     })
 
     const initialContainerState = {

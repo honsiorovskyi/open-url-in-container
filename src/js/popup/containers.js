@@ -9,6 +9,7 @@ import { el, toggle, hide } from './dom.js'
 const CONTAINER_ELEMENT_ID = 'container'
 const CONTAINER_OPTIONS_TOGGLE = 'containerOptionsToggle'
 const CONTAINER_OPTIONS = 'containerOptions'
+const USE_HOSTNAME_FOR_CONTAINER_NAME = 'useHostnameForContainerName'
 const USE_CONTAINER_ID = 'useContainerId'
 const USE_CONTAINER_NAME = 'useContainerName'
 const SIGNING_KEY_TOGGLE = 'toggleSigningKey'
@@ -40,8 +41,12 @@ export function updateContainerOptions(state) {
     el(USE_CONTAINER_ID).checked = state.useContainerId
     el(USE_CONTAINER_NAME).checked = state.useContainerName
 
+    el(USE_HOSTNAME_FOR_CONTAINER_NAME).checked = state.useHostnameForContainerName
+
     el(USE_CONTAINER_ID).disabled = state.useContainerId && !state.useContainerName
     el(USE_CONTAINER_NAME).disabled = state.useContainerName && !state.useContainerId
+
+    el(CONTAINER_ELEMENT_ID).disabled = state.useHostnameForContainerName
 }
 
 async function updateSigningKey() {
@@ -69,6 +74,10 @@ export function setupContainerSelector(containers, s) {
 
     el(USE_CONTAINER_NAME).onchange = function (e) {
         s.update({ useContainerName: e.target.checked })
+    }
+
+    el(USE_HOSTNAME_FOR_CONTAINER_NAME).onchange = function (e) {
+        s.update({ useHostnameForContainerName: e.target.checked })
     }
 
     el(SIGNING_KEY_REGENERATION_CONFIRMATION_CONFIRM).onclick = async function () {
