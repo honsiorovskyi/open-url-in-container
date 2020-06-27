@@ -1,7 +1,7 @@
-import { hex2array, array2hex } from '../js/hex.js'
+import { hex2array, array2hex } from '../../js/security/hex.js'
 
-describe('hex.js', () => {
-    describe('hex.js/hex2array', () => {
+describe('security/hex.js', () => {
+    describe('security/hex.js/hex2array', () => {
         it('should do conversion correctly', () => {
             const cases = [
                 {in: 'ab1ac4', e: Uint8Array.from([0xab, 0x1a, 0xc4])},
@@ -29,7 +29,7 @@ describe('hex.js', () => {
         })
     })
 
-    describe('hex.js/array2hex', () => {
+    describe('security/hex.js/array2hex', () => {
         it('should do the conversion correctly', () => {
             const cases = [
                 {in: Uint8Array.from([0xab, 0x1a, 0xc4]), e: 'ab1ac4'},

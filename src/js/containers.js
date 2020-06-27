@@ -5,8 +5,8 @@
 const DEFAULT_COLOR = 'yellow'
 const DEFAULT_ICON = 'fingerprint'
 
-export async function getContainerByName(name) {
-    let containers = await browser.contextualIdentities.query({
+async function getContainerByName(name) {
+    const containers = await browser.contextualIdentities.query({
         name: name,
     })
 
@@ -17,7 +17,7 @@ export async function getContainerByName(name) {
     return null
 }
 
-export function lookupContainer({ id, name }) {
+function lookupContainer({ id, name }) {
     if (id) {
         return browser.contextualIdentities.get(id)
     }
@@ -29,7 +29,7 @@ export function lookupContainer({ id, name }) {
     throw new Error('looking up container: neither id, nor name is present in the params')
 }
 
-export function createContainer({ name, color, icon }) {
+function createContainer({ name, color, icon }) {
     return browser.contextualIdentities.create({
         name: name,
         color: color || DEFAULT_COLOR,

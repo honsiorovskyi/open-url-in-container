@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { toggle, hide, el } from '../dom.js'
+import { toggle, hide, el } from './dom.js'
 
 const LINK_PARENT_ELEMENT_ID = 'link'
 const LINK_ELEMENT_ID = 'link-a'

@@ -9,17 +9,22 @@ import {
     CONTAINER_SELECTOR_STATE,
 } from '../config.js'
 
-import { State } from '../state.js'
-import { hide, show } from '../dom.js'
 import { getActiveTab } from '../tabs.js'
 import { OpenerParameters } from '../params.js'
+
+import { State } from './state.js'
+import { hide, show } from './dom.js'
 
 import { updateBookmarkLink, updateBookmarkConfirmation } from './bookmark.js'
 import { updateURL } from './url.js'
 import { updateTerminalCommand } from './terminal.js'
 import { updateSignatureCommand } from './signature.js'
 import { setupFolderFolding } from './folders.js'
-import { updateContainerSelector, updateContainerOptions, setupContainerSelector } from './containers.js'
+import {
+    updateContainerSelector,
+    updateContainerOptions,
+    setupContainerSelector
+} from './containers.js'
 
 async function updateLinks(containers, containerState) {
     const selectedContainer = containers.find(c => c.cookieStoreId === containerState.selectedContainerId)
@@ -30,7 +35,7 @@ async function updateLinks(containers, containerState) {
         id: containerState.useContainerId ? selectedContainer.cookieStoreId : null,
         name: containerState.useContainerName ? selectedContainer.name : null,
     })
-    const {queryString, signature} = await params.sign(await getSigningKey())
+    const { queryString, signature } = await params.sign(await getSigningKey())
 
     updateBookmarkLink(tab, queryString)
     updateBookmarkConfirmation(tab, queryString, selectedContainer.name)

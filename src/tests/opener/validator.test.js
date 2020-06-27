@@ -12,10 +12,10 @@ import {
     oneOf,
     atLeastOneRequired,
     oneOfOrEmpty,
-} from '../js/validator.js'
+} from '../../js/opener/validator.js'
 
-describe('validator.js', () => {
-    describe('validator.js/parser', () => {
+describe('opener/validator.js', () => {
+    describe('opener/validator.js/parser', () => {
         let data = new URLSearchParams('a=5&b=6&c=foo.com&d=yes&__validators=abc')
 
         it('should apply validators to values', () => {
@@ -69,7 +69,7 @@ describe('validator.js', () => {
         })
     })
 
-    describe('validator.js/required', () => {
+    describe('opener/validator.js/required', () => {
         it('should throw on empty value', () => {
             expect(() => { required('', 'whatever') }).to.throw()
             expect(() => { required(null, 'whatever') }).to.throw()
@@ -81,7 +81,7 @@ describe('validator.js', () => {
         })
     })
 
-    describe('validator.js/httpUrl', () => {
+    describe('opener/validator.js/httpUrl', () => {
         it('should accept urls with scheme', () => {
             expect(url('http://foo.com', 'whatever')).to.equal('http://foo.com/')
             expect(url('https://foo.com', 'whatever')).to.equal('https://foo.com/')
@@ -112,7 +112,7 @@ describe('validator.js', () => {
         })
     })
 
-    describe('validator.js/integer', () => {
+    describe('opener/validator.js/integer', () => {
         it('should accept integers', () => {
             expect(integer('1', 'whatever')).to.equal(1)
             expect(integer('-1', 'whatever')).to.equal(-1)
@@ -131,7 +131,7 @@ describe('validator.js', () => {
         })
     })
 
-    describe('validator.js/boolean', () => {
+    describe('opener/validator.js/boolean', () => {
         it('should accept booleans', () => {
             expect(boolean('true', 'whatever')).to.equal(true)
             expect(boolean('TrUe', 'whatever')).to.equal(true)
@@ -159,7 +159,7 @@ describe('validator.js', () => {
         })
     })
 
-    describe('validator.js/fallback', () => {
+    describe('opener/validator.js/fallback', () => {
         it('should not change non-empty values', () => {
             expect(fallback('foo')('bar', 'whatever')).to.equal('bar')
             expect(fallback('foo')(1, 'whatever')).to.equal(1)
@@ -173,7 +173,7 @@ describe('validator.js', () => {
         })
     })
 
-    describe('validator.js/oneOf', () => {
+    describe('opener/validator.js/oneOf', () => {
         it('should pass if the parameter is in the preconfigured list', () => {
             expect(oneOf(['a', 'b'])('a')).to.equal('a')
             expect(oneOf(['a', 'b'])('b')).to.equal('b')
@@ -187,7 +187,7 @@ describe('validator.js', () => {
         })
     })
 
-    describe('validator.js/oneOfOrEmpty', () => {
+    describe('opener/validator.js/oneOfOrEmpty', () => {
         it('should pass if the parameter is in the preconfigured list', () => {
             expect(oneOf(['a', 'b'])('a')).to.equal('a')
             expect(oneOf(['a', 'b'])('b')).to.equal('b')
@@ -204,7 +204,7 @@ describe('validator.js', () => {
         })
     })
 
-    describe('validator.js/atLeastOneRequired', () => {
+    describe('opener/validator.js/atLeastOneRequired', () => {
         const v = atLeastOneRequired(['a', 'b'])
 
         it('should pass when at least one parameter is present', () => {

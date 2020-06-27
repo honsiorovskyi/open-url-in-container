@@ -1,13 +1,12 @@
-
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { parseBookmarkParams, parseOpenerParams } from './parsers.js'
-import { getSigningKey } from './config.js'
-import { prepareContainer } from './containers.js'
-import { newTab, closeCurrentTab } from './tabs.js'
-import { SignatureError, OpenerParameters } from './params.js'
+import { getSigningKey } from '../config.js'
+import { prepareContainer } from '../containers.js'
+import { newTab, closeCurrentTab } from '../tabs.js'
+import { SignatureError, OpenerParameters } from '../params.js'
+import { parseBookmarkParams, parseOpenerParams } from './parser.js'
 
 function error(e) {
     console.error(e)

@@ -1,11 +1,11 @@
-import { parseOpenerParams } from '../js/parsers.js'
+import { parseOpenerParams } from '../../js/opener/parser.js'
 
-describe('parsers.js', () => {
+describe('opener/parser.js', () => {
     const hashString = function (params) {
         return `#ext+container:${new URLSearchParams(params).toString()}`
     }
 
-    describe('params.js/parseOpenerParams', () => {
+    describe('opener/parser.js/parseOpenerParams', () => {
         it('should fail on invalid hash', () => {
             const hash = 'foo'
             expect(() => { parseOpenerParams(hash) }).to.throw()

@@ -3,8 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { saveState, restoreState, POPUP_FOLDER_STATE } from '../config.js'
-import { State } from '../state.js'
-import { el } from '../dom.js'
+import { State } from './state.js'
+import { el } from './dom.js'
 
 function updateFolderFoldingState({ newState, update }) { // eslint-disable-line no-unused-vars
     saveState(POPUP_FOLDER_STATE, newState)

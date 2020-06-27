@@ -2,9 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { el, toggle, hide } from '../dom.js'
-import { generateKey } from '../security.js'
 import { getSigningKey, setSigningKey } from '../config.js'
+import { generateKey } from '../security/keys.js'
+import { el, toggle, hide } from './dom.js'
 
 const CONTAINER_ELEMENT_ID = 'container'
 const CONTAINER_OPTIONS_TOGGLE = 'containerOptionsToggle'
@@ -60,39 +60,39 @@ export function updateContainerSelector(containers, state) {
 export function setupContainerSelector(containers, s) {
     el(CONTAINER_ELEMENT_ID).onchange = function (e) {
         const container = containers.find(c => c.cookieStoreId === e.target.value)
-        s.update({selectedContainerId: container.cookieStoreId})
+        s.update({ selectedContainerId: container.cookieStoreId })
     }
 
-    el(USE_CONTAINER_ID).onchange = function(e) {
-        s.update({useContainerId: e.target.checked})
+    el(USE_CONTAINER_ID).onchange = function (e) {
+        s.update({ useContainerId: e.target.checked })
     }
 
-    el(USE_CONTAINER_NAME).onchange = function(e) {
-        s.update({useContainerName: e.target.checked})
+    el(USE_CONTAINER_NAME).onchange = function (e) {
+        s.update({ useContainerName: e.target.checked })
     }
 
-    el(SIGNING_KEY_REGENERATION_CONFIRMATION_CONFIRM).onclick = async function() {
+    el(SIGNING_KEY_REGENERATION_CONFIRMATION_CONFIRM).onclick = async function () {
         await regenerateSigningKey()
         s.update({}) // trigger an empty update to refresh links
         updateSigningKey()
         hide(SIGNING_KEY_REGENERATION_CONFIRMATION)
     }
 
-    el(SIGNING_KEY_REGENERATION_CONFIRMATION_CANCEL).onclick = function() {
+    el(SIGNING_KEY_REGENERATION_CONFIRMATION_CANCEL).onclick = function () {
         hide(SIGNING_KEY_REGENERATION_CONFIRMATION)
     }
 
     // pure UI
-    el(CONTAINER_OPTIONS_TOGGLE).onclick = function() {
+    el(CONTAINER_OPTIONS_TOGGLE).onclick = function () {
         toggle(CONTAINER_OPTIONS)
     }
 
-    el(SIGNING_KEY_TOGGLE).onclick = function() {
+    el(SIGNING_KEY_TOGGLE).onclick = function () {
         updateSigningKey()
         toggle(SIGNING_KEY_CONTAINER)
     }
 
-    el(REGENERATE_SIGNING_KEY).onclick = function() {
+    el(REGENERATE_SIGNING_KEY).onclick = function () {
         toggle(SIGNING_KEY_REGENERATION_CONFIRMATION)
     }
 }
