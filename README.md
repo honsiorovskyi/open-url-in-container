@@ -2,6 +2,8 @@
 
 <img src="src/icons/extension-96.png">
 
+_**Important:** this code corresponds to an early preview of the future 2.x.x branch. If you want to access the current stable code, please see [version 1.0.3](https://github.com/honsiorovskyi/open-url-in-container/tree/1.0.3)._
+
 This is a Firefox extension that enables support for opening links in specific containers using custom protocol handler.
 It works for terminal, OS shortcuts, bookmarks, password managers, regular HTML pages and many other things.
 
