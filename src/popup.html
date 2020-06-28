@@ -64,14 +64,17 @@
         }
 
         .draggable {
+            display: flex;
+            flex-direction: row;
             padding: 10px;
             border: 1px solid #CDC7C2;
             background-color: #faf9f8;
         }
 
-        .draggable>a {
+        .draggable>#link-a {
             display: block;
-            width: 100%;
+            flex-grow: 1;
+            min-width: 0;
             height: 19px;
             white-space: nowrap;
             overflow: hidden;
@@ -81,11 +84,28 @@
             background: transparent;
         }
 
-        .draggable>a>img {
+        .draggable>#link-a>img {
             width: 19px;
             height: 19px;
             margin-right: 6px;
             vertical-align: middle;
+        }
+
+        .draggable>#bookmark-a {
+            display: block;
+            flex-shrink: 0;
+            width: 19px;
+            height: 19px;
+            background-image: url('./icons/bookmark.svg');
+            background-size: 19px auto;
+            background-position: 0 0;
+            cursor: pointer;
+        }
+
+        .draggable>#bookmark-a.created {
+            background-image: url('./icons/bookmark.svg');
+            background-size: 19px auto;
+            background-position: 0 19px;
         }
 
         .ro-input>input {
@@ -198,6 +218,7 @@
                     </div>
                     <div id="link" class="draggable">
                         <a id='link-a'></a>
+                        <a id='bookmark-a'></a>
                     </div>
                 </div>
                 <div id="bookmark-confirmation" class="container centered hidden">
