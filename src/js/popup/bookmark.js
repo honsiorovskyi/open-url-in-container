@@ -3,7 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { el } from './dom.js'
-import { getActiveTab } from '../tabs.js'
 
 const LINK_ELEMENT = 'linkElement'
 const LINK_ICON = 'linkIcon'
@@ -36,6 +35,22 @@ function refreshBookmarks(url, title) {
     return existingBookmarks
 }
 
+function toggleBookmark(url, title) {
+    refreshBookmarks(url, title).then(bookmarksFound => {
+        if (bookmarksFound.length == 0) {
+            browser.bookmarks.create({
+                title: title,
+                url: url,
+            }).then(refreshBookmarks.bind(this, url, title))
+        } else {
+            bookmarksFound.forEach(b => {
+                browser.bookmarks.remove(b.id)
+                    .then(refreshBookmarks.bind(this, url, title))
+            })
+        }
+    })
+}
+
 export function updateBookmarkLink(tab, qs, containerName) {
     const url = bookmarkUrl(tab, qs)
     const title = `[${containerName}] ${tab.title}`
@@ -45,16 +60,13 @@ export function updateBookmarkLink(tab, qs, containerName) {
     el(LINK_ICON).style.backgroundImage = `url(${tab.favIconUrl})`
     el(LINK_TITLE).textContent = tab.title
 
-    el(LINK_ELEMENT).onclick = async e => {
+    el(LINK_ELEMENT).onclick = e => {
         e.preventDefault()
-        browser.tabs.create({
-            url: url,
-            index: (await getActiveTab()).index + 1,
-        })
+        toggleBookmark(url, title)
     }
 
     // drag & drop handling
-    el(LINK_ELEMENT).onmouseover = e => {
+    el(LINK_ELEMENT).onmouseenter = e => {
         e.target.classList.add('hovered')
     }
 
@@ -74,19 +86,8 @@ export function updateBookmarkLink(tab, qs, containerName) {
     // bookmark button
     refreshBookmarks(url, title)
 
-    el(BOOKMARK_BUTTON).onclick = () => {
-        refreshBookmarks(url, title).then(bookmarksFound => {
-            if (bookmarksFound.length == 0) {
-                browser.bookmarks.create({
-                    title: title,
-                    url: url,
-                }).then(refreshBookmarks.bind(this, url, title))
-            } else {
-                bookmarksFound.forEach(b => {
-                    browser.bookmarks.remove(b.id)
-                        .then(refreshBookmarks.bind(this, url, title))
-                })
-            }
-        })
+    el(BOOKMARK_BUTTON).onclick = e => {
+        e.preventDefault()
+        toggleBookmark(url, title)
     }
 }
