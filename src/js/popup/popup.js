@@ -15,7 +15,7 @@ import { OpenerParameters } from '../params.js'
 import { State } from './state.js'
 import { hide, show } from './dom.js'
 
-import { updateBookmarkLink, updateBookmarkConfirmation } from './bookmark.js'
+import { updateBookmarkLink } from './bookmark.js'
 import { updateURL } from './url.js'
 import { updateTerminalCommand } from './terminal.js'
 import { updateSignatureCommand } from './signature.js'
@@ -48,8 +48,7 @@ async function updateLinks(containers, containerState) {
     })
     const { queryString, signature } = await params.sign(await getSigningKey())
 
-    updateBookmarkLink(tab, queryString)
-    updateBookmarkConfirmation(tab, queryString, selectedContainer.name)
+    updateBookmarkLink(tab, queryString, containerProps.name || selectedContainer.name)
     updateURL(queryString)
     updateTerminalCommand(params, signature)
     updateSignatureCommand(signature)
