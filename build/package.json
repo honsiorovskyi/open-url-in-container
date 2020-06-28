@@ -1,0 +1,20 @@
+{
+    "name": "open-url-in-container",
+    "author": {
+        "name": "Denys Honsiorovskyi",
+        "url": "https://github.com/honsiorovskyi"
+    },
+    "repository": {
+        "url": "https://github.com/honsiorovskyi/open-url-in-container"
+    },
+    "license": "MPL-2.0",
+    "scripts": {
+        "lint": "eslint -c .eslintrc.json --ignore-pattern ../src/tests/lib --fix ../src",
+        "build": "web-ext build --overwrite-dest --source-dir ../src --ignore-files ../src/tests",
+        "start": "web-ext run --source-dir ../src"
+    },
+    "devDependencies": {
+        "eslint": "^7.0.0",
+        "web-ext": "^4.2.0"
+    }
+}

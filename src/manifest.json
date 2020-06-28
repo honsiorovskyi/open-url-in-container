@@ -1,25 +1,40 @@
 {
     "manifest_version": 2,
-    "name": "Open external links in a container",
-    "description": "This extension enables support for opening links in specific containers using custom protocol handler. It works for terminal, OS shortcuts and regular HTML pages.",
-    "version": "1.0.3",
+    "name": "Open links in containers",
+    "description": "This extension enables support for opening links in specific containers using custom protocol handler. It works for bookmars, terminal, OS shortcuts and regular HTML pages.",
+    "version": "2.0.0alpha5",
+
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "{4d4aee45-b821-48a9-801c-d4a05821de76}"
+        }
+    }, 
 
     "icons": {
-      "48": "icons/extension-48.png",
-      "96": "icons/extension-96.png"
+        "19": "icons/extension-19.png",
+        "48": "icons/extension-48.png",
+        "96": "icons/extension-96.png"
     },
 
-    "protocol_handlers": [
-        {
-          "protocol": "ext+container",
-          "name": "Open URL in a container",
-          "uriTemplate": "/opener.html#%s"
-        }
-    ],
-    
+    "protocol_handlers": [{
+        "protocol": "ext+container",
+        "name": "Open links in containers",
+        "uriTemplate": "/opener.html#%s"
+    }],
+
+    "page_action": {
+        "default_icon": "icons/extension-19.png",
+        "default_title": "Open links in containers",
+        "default_popup": "popup.html",
+        "browser_style": true,
+        "show_matches": ["<all_urls>"]
+    },
+
     "permissions": [
         "contextualIdentities",
-        "cookies"
+        "cookies",
+        "tabs",
+        "bookmarks",
+        "storage"
     ]
-  }
-  
+}

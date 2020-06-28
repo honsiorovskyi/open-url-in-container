@@ -1,0 +1,313 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+  -- License, v. 2.0. If a copy of the MPL was not distributed with this
+  -- file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Open external links in a container</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        body {
+            width: 350px;
+        }
+
+        .container {
+            padding: 5px;
+        }
+
+        .centered {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .element {
+            padding: 5px;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: row;
+        }
+
+        #containerOptions {
+            margin-top: 10px;
+        }
+
+        #container,
+        #signingKey {
+            flex-grow: 1;
+        }
+
+        .gear-button,
+        .regenerate-button {
+            margin-left: 5px;
+            width: 24px;
+            height: 24px;
+            background-size: 50%;
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+        }
+
+        .gear-button {
+            background-image: url('./icons/gear.svg');
+        }
+
+        .regenerate-button {
+            background-image: url('./icons/regenerate.svg');
+        }
+
+        #toggleSigningKey {
+            margin-bottom: 0;
+        }
+
+        #bookmark {
+            display: flex;
+            flex-direction: row;
+            padding: 5px;
+            border: 1px solid #CDC7C2;
+            background-color: #faf9f8;
+        }
+
+        #linkContainer {
+            flex-grow: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        #linkElement {
+            display: flex;
+            flex-direction: row;
+
+            position: relative;
+            
+            white-space: nowrap;
+            color: black;
+            text-decoration: none;
+            padding: 5px;
+        }
+
+
+        #linkIcon {
+            display: block;
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            margin-right: 6px;
+            background-size: 16px 16px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #linkTitle {
+            display: block;
+            line-height: 20px;
+
+            /* nice text-level overflow */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #linkElement.dragged>span {
+            overflow: visible;
+        }
+
+        #linkElement.hovered>* {
+            filter: blur(4px) opacity(0.6);
+        }
+
+        #linkElement.hovered::after {
+            content: 'Drag me to your bookmarks bar';
+            background: transparent;
+            display: block;
+            position: absolute;
+            float: left;
+            left: 0;
+            right: 0;
+            top: 0;
+            line-height: 30px;
+            text-align: center;
+
+            filter: none;
+        }
+
+        #bookmarkButton {
+            display: block;
+            flex-shrink: 0;
+            margin: 5px;
+            width: 20px;
+            height: 20px;
+            background-image: url('./icons/bookmark.svg');
+            background-size: 20px auto;
+            background-position: 0 0;
+            cursor: pointer;
+        }
+
+        #bookmarkButton.exists {
+            background-image: url('./icons/bookmark.svg');
+            background-size: 20px auto;
+            background-position: 0 20px;
+        }
+
+        .ro-input>input {
+            width: 100%;
+            border-radius: 0;
+            padding: 10px;
+        }
+
+        .folder.folded .content {
+            display: none;
+        }
+
+        .title {
+            font-weight: bold;
+        }
+
+        .folder > .title {
+            padding: 5px;
+        }
+
+        .folder > .title::before {
+            content: '–';
+            float: left;
+            width: 20px;
+            text-align: center;
+            color: #aaa;
+            vertical-align: middle;
+        }
+
+        .folder.folded > .title::before {
+            content: '+';
+        }
+
+        .folder > .content {
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loader"></div>
+    <div id="mainContainer" class="container hidden">
+        <div id="containerFolder" class="folder folded">
+            <div class="title">Container</div>
+            <div class="content">
+                <div class="element container">
+                    <div class="row">
+                        <select id="container" class="browser-style"></select>
+                        <button id="containerOptionsToggle" class="gear-button browser-style"></button>
+                    </div>
+                    <div class="row">
+                        <div class="panel-formElements-item browser-style">
+                            <input id="useHostnameForContainerName" type="checkbox" />
+                            <label for="useHostnameForContainerName">User website domain for container name</label>
+                        </div>
+                    </div>
+                    <div id="containerOptions" class="container hidden">
+                        <div class="panel-formElements-item browser-style">
+                            <label class="title">Container properties to include in links:</label>
+                        </div>
+                        <div class="panel-formElements-item browser-style">
+                            <input id="useContainerId" type="checkbox" />
+                            <label for="useContainerId">Container ID</label>
+                        </div>
+                        <div class="panel-formElements-item browser-style">
+                            <input id="useContainerName" type="checkbox" />
+                            <label for="useContainerName">Container Name</label>
+                        </div>
+                        <div>
+                            <button id="toggleSigningKey" class="browser-style">Signing key</button>
+                            <div id="signingKeyContainer" class="hidden">
+                                <div>
+                                    <p><strong>Warning!</strong>
+                                        Exposing this key is potentially dangerous for your privacy.
+                                        Please be sure you know what you're doing
+                                        when using this key.
+                                    </p>
+                                </div>
+                                <div class="row browser-style">
+                                    <input id="signingKey" type="text" readonly class="browser-style">
+                                    <button id="regenerateSigningKey" class="regenerate-button browser-style"></button>
+                                </div>
+                                <div id="signingKeyRegenerationConfirmation" class="container centered hidden">
+                                    <div class="element">
+                                        <label for="buttons"><strong>Warning!</strong>
+                                            If you continue, all your previously saved links and bookmarks
+                                            will start showing an ugly warning.
+                                            Do you really want to regenerate this key?
+                                        </label>
+                                    </div>
+                                    <div class="element">
+                                        <button id="signingKeyRegenerationConfirmationConfirm"
+                                            class="browser-style default">Regenerate</button>
+                                        <button id="signingKeyRegenerationConfirmationCancel"
+                                            class="browser-style">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="bookmarkFolder" class="folder folded">
+            <div class="title">Bookmark</div>
+            <div class="content">
+                <div class="element container">
+                    <div>
+                        <!-- this empty div is needed for dragging to work - I don't know why -->
+                    </div>
+                    <div id="bookmark">
+                        <div id="linkContainer">
+                            <a id="linkElement"><div id="linkIcon"></div><span id="linkTitle"></span></a>
+                        </div>
+                        <!-- <div class="tooltip">Drag me to your bookmarks bar</div> -->
+                        <a id="bookmarkButton"></a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div id="urlFolder" class="folder folded">
+            <div class="title">URL</div>
+            <div class="content">
+                <div class="element container">
+                    <div id="command" class="ro-input browser-style">
+                        <input id="urlInput" type="text" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="terminalFolder" class="folder folded">
+            <div class="title">Terminal</div>
+            <div class="content">
+                <div class="element container">
+                    <div id="command" class="ro-input browser-style">
+                        <input id="terminalInput" type="text" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="signatureFolder" class="folder folded">
+            <div class="title">Signature</div>
+            <div class="content">
+                <div class="element container">
+                    <div id="command" class="ro-input browser-style">
+                        <input id="signatureInput" type="text" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/popup/popup.js" type="module"></script>
+</body>
+
+</html>

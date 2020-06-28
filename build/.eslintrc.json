@@ -1,0 +1,56 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true,
+        "mocha": true
+    },
+    "extends": "eslint:recommended",
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly",
+        "browser": true,
+        "chai": true,
+        "expect": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 11,
+        "sourceType": "module"
+    },
+    "rules": {
+        "indent": [
+            "error",
+            4,
+            { "SwitchCase": 1 }
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "never"
+        ],
+        "no-console": [
+            "error",
+            { "allow": ["warn", "error"]}
+        ],
+        "no-await-in-loop": "error",
+        "no-extra-parens": "error",
+        "require-atomic-updates": "error",
+        "block-scoped-var": "error",
+        "consistent-return": "error",
+        "dot-location": [
+            "error",
+            "property"
+        ],
+        "dot-notation": "error",
+        "no-sequences": "error",
+        "no-throw-literal": "error",
+        "no-unused-expressions": "error",
+        "require-await": "error"
+    }
+}
