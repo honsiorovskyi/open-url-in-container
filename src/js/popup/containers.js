@@ -2,8 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { getSigningKey, setSigningKey } from '../config.js'
-import { generateKey } from '../security/keys.js'
+import { getSigningKey, regenerateSigningKey } from '../config.js'
 import { el, toggle, hide } from './dom.js'
 
 const CONTAINER_ELEMENT_ID = 'container'
@@ -51,10 +50,6 @@ export function updateContainerOptions(state) {
 
 async function updateSigningKey() {
     el(SIGNING_KEY).value = await getSigningKey()
-}
-
-async function regenerateSigningKey() {
-    await setSigningKey(await generateKey(), true)
 }
 
 export function updateContainerSelector(containers, state) {

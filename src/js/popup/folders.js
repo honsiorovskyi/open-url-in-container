@@ -34,7 +34,8 @@ function setupFolderFoldingListeners(s) {
 export async function setupFolderFolding() {
     // update folder state
     const initialState = {
-        bookmarkFolder: false,
+        containerFolder: true,
+        bookmarkFolder: true,
         urlFolder: false,
         terminalFolder: false,
         signatureFolder: false,

@@ -24,10 +24,6 @@
         "show_matches": ["<all_urls>"]
     },
 
-    "background": {
-        "page": "background.html"
-    },
-
     "permissions": [
         "contextualIdentities",
         "cookies",

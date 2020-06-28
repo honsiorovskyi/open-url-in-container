@@ -36,6 +36,10 @@
             flex-direction: row;
         }
 
+        #containerOptions {
+            margin-top: 10px;
+        }
+
         #container,
         #signingKey {
             flex-grow: 1;
@@ -63,49 +67,93 @@
             margin-bottom: 0;
         }
 
-        .draggable {
+        #bookmark {
             display: flex;
             flex-direction: row;
-            padding: 10px;
+            padding: 5px;
             border: 1px solid #CDC7C2;
             background-color: #faf9f8;
         }
 
-        .draggable>#link-a {
-            display: block;
+        #linkContainer {
             flex-grow: 1;
             min-width: 0;
-            height: 19px;
+            overflow: hidden;
+        }
+
+        #linkElement {
+            display: flex;
+            flex-direction: row;
+
+            position: relative;
+            
+            white-space: nowrap;
+            color: black;
+            text-decoration: none;
+            padding: 5px;
+        }
+
+
+        #linkIcon {
+            display: block;
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            margin-right: 6px;
+            background-size: 16px 16px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #linkTitle {
+            display: block;
+            line-height: 20px;
+
+            /* nice text-level overflow */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            color: black;
-            text-decoration: none;
+        }
+
+        #linkElement.dragged>span {
+            overflow: visible;
+        }
+
+        #linkElement.hovered>* {
+            filter: blur(4px) opacity(0.6);
+        }
+
+        #linkElement.hovered::after {
+            content: 'Drag me to your bookmarks bar';
             background: transparent;
+            display: block;
+            position: absolute;
+            float: left;
+            left: 0;
+            right: 0;
+            top: 0;
+            line-height: 30px;
+            text-align: center;
+
+            filter: none;
         }
 
-        .draggable>#link-a>img {
-            width: 19px;
-            height: 19px;
-            margin-right: 6px;
-            vertical-align: middle;
-        }
-
-        .draggable>#bookmark-a {
+        #bookmarkButton {
             display: block;
             flex-shrink: 0;
-            width: 19px;
-            height: 19px;
+            margin: 5px;
+            width: 20px;
+            height: 20px;
             background-image: url('./icons/bookmark.svg');
-            background-size: 19px auto;
+            background-size: 20px auto;
             background-position: 0 0;
             cursor: pointer;
         }
 
-        .draggable>#bookmark-a.exists {
+        #bookmarkButton.exists {
             background-image: url('./icons/bookmark.svg');
-            background-size: 19px auto;
-            background-position: 0 19px;
+            background-size: 20px auto;
+            background-position: 0 20px;
         }
 
         .ro-input>input {
@@ -122,24 +170,24 @@
             font-weight: bold;
         }
 
-        .folder .title {
+        .folder > .title {
             padding: 5px;
         }
 
-        .folder .title::before {
+        .folder > .title::before {
             content: '–';
             float: left;
-            width: 19px;
+            width: 20px;
             text-align: center;
             color: #aaa;
             vertical-align: middle;
         }
 
-        .folder.folded .title::before {
+        .folder.folded > .title::before {
             content: '+';
         }
 
-        .folder .content {
+        .folder > .content {
             padding: 0;
         }
     </style>
@@ -148,61 +196,61 @@
 <body>
     <div id="loader"></div>
     <div id="mainContainer" class="container hidden">
-        <div class="element">
-            <div class="title">
-                <label for="container">Open URL in the container</label>
-            </div>
-        </div>
-        <div class="element">
-            <div class="row">
-                <select id="container" class="browser-style"></select>
-                <button id="containerOptionsToggle" class="gear-button browser-style"></button>
-            </div>
-            <div class="row">
-                <div class="panel-formElements-item browser-style">
-                    <input id="useHostnameForContainerName" type="checkbox" />
-                    <label for="useHostnameForContainerName">User website domain for container name</label>
-                </div>
-            </div>
-            <div id="containerOptions" class="container hidden">
-                <div class="panel-formElements-item browser-style">
-                    <label class="title">Container properties to include in links:</label>
-                </div>
-                <div class="panel-formElements-item browser-style">
-                    <input id="useContainerId" type="checkbox" />
-                    <label for="useContainerId">Container ID</label>
-                </div>
-                <div class="panel-formElements-item browser-style">
-                    <input id="useContainerName" type="checkbox" />
-                    <label for="useContainerName">Container Name</label>
-                </div>
-                <div>
-                    <button id="toggleSigningKey" class="browser-style">Signing key</button>
-                    <div id="signingKeyContainer" class="hidden">
+        <div id="containerFolder" class="folder folded">
+            <div class="title">Container</div>
+            <div class="content">
+                <div class="element container">
+                    <div class="row">
+                        <select id="container" class="browser-style"></select>
+                        <button id="containerOptionsToggle" class="gear-button browser-style"></button>
+                    </div>
+                    <div class="row">
+                        <div class="panel-formElements-item browser-style">
+                            <input id="useHostnameForContainerName" type="checkbox" />
+                            <label for="useHostnameForContainerName">User website domain for container name</label>
+                        </div>
+                    </div>
+                    <div id="containerOptions" class="container hidden">
+                        <div class="panel-formElements-item browser-style">
+                            <label class="title">Container properties to include in links:</label>
+                        </div>
+                        <div class="panel-formElements-item browser-style">
+                            <input id="useContainerId" type="checkbox" />
+                            <label for="useContainerId">Container ID</label>
+                        </div>
+                        <div class="panel-formElements-item browser-style">
+                            <input id="useContainerName" type="checkbox" />
+                            <label for="useContainerName">Container Name</label>
+                        </div>
                         <div>
-                            <p><strong>Warning!</strong>
-                                Exposing this key is potentially dangerous for your privacy.
-                                Please be sure you know what you're doing
-                                when using this key.
-                            </p>
-                        </div>
-                        <div class="row browser-style">
-                            <input id="signingKey" type="text" readonly class="browser-style">
-                            <button id="regenerateSigningKey" class="regenerate-button browser-style"></button>
-                        </div>
-                        <div id="signingKeyRegenerationConfirmation" class="container centered hidden">
-                            <div class="element">
-                                <label for="buttons"><strong>Warning!</strong>
-                                    If you continue, all your previously saved links and bookmarks
-                                    will start showing an ugly warning.
-                                    Do you really want to regenerate this key?
-                                </label>
-                            </div>
-                            <div class="element">
-                                <button id="signingKeyRegenerationConfirmationConfirm"
-                                    class="browser-style default">Regenerate</button>
-                                <button id="signingKeyRegenerationConfirmationCancel"
-                                    class="browser-style">Cancel</button>
+                            <button id="toggleSigningKey" class="browser-style">Signing key</button>
+                            <div id="signingKeyContainer" class="hidden">
+                                <div>
+                                    <p><strong>Warning!</strong>
+                                        Exposing this key is potentially dangerous for your privacy.
+                                        Please be sure you know what you're doing
+                                        when using this key.
+                                    </p>
+                                </div>
+                                <div class="row browser-style">
+                                    <input id="signingKey" type="text" readonly class="browser-style">
+                                    <button id="regenerateSigningKey" class="regenerate-button browser-style"></button>
+                                </div>
+                                <div id="signingKeyRegenerationConfirmation" class="container centered hidden">
+                                    <div class="element">
+                                        <label for="buttons"><strong>Warning!</strong>
+                                            If you continue, all your previously saved links and bookmarks
+                                            will start showing an ugly warning.
+                                            Do you really want to regenerate this key?
+                                        </label>
+                                    </div>
+                                    <div class="element">
+                                        <button id="signingKeyRegenerationConfirmationConfirm"
+                                            class="browser-style default">Regenerate</button>
+                                        <button id="signingKeyRegenerationConfirmationCancel"
+                                            class="browser-style">Cancel</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -216,10 +264,14 @@
                     <div>
                         <!-- this empty div is needed for dragging to work - I don't know why -->
                     </div>
-                    <div id="link" class="draggable">
-                        <a id='link-a'></a>
-                        <a id='bookmark-a'></a>
+                    <div id="bookmark">
+                        <div id="linkContainer">
+                            <a id="linkElement"><div id="linkIcon"></div><span id="linkTitle"></span></a>
+                        </div>
+                        <!-- <div class="tooltip">Drag me to your bookmarks bar</div> -->
+                        <a id="bookmarkButton"></a>
                     </div>
+
                 </div>
             </div>
         </div>

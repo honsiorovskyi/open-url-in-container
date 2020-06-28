@@ -60,8 +60,8 @@ async function main() {
 
     const restoredContainerState = await restoreState(CONTAINER_SELECTOR_STATE, {
         selectedContainerId: null,
-        useContainerId: true,
-        useContainerName: false,
+        useContainerId: false,
+        useContainerName: true,
         useHostnameForContainerName: false,
     })
 
