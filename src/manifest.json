@@ -2,7 +2,13 @@
     "manifest_version": 2,
     "name": "Open links in containers",
     "description": "This extension enables support for opening links in specific containers using custom protocol handler. It works for bookmars, terminal, OS shortcuts and regular HTML pages.",
-    "version": "2.0.0alpha4",
+    "version": "2.0.0alpha5",
+
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "{4d4aee45-b821-48a9-801c-d4a05821de76}"
+        }
+    }, 
 
     "icons": {
         "19": "icons/extension-19.png",
