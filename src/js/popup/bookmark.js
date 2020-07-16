@@ -10,6 +10,12 @@ const LINK_TITLE = 'linkTitle'
 
 const BOOKMARK_BUTTON = 'bookmarkButton'
 
+function escape(text) {
+    const el = document.createElement('div')
+    el.innerText = text
+    return el.innerHTML
+}
+
 function bookmarkUrl(tab, qs) {
     const dataUrlMatch = tab.favIconUrl.match(/data:(.+)[;,]/)
     const favIconType = dataUrlMatch ? dataUrlMatch[1] : ''
@@ -18,13 +24,13 @@ function bookmarkUrl(tab, qs) {
     const bookmarkBody = `
         <html>
             <head>
-                <title>${tab.title}</title>
+                <title>${escape(tab.title)}</title>
                 <link rel="icon" type="${favIconType}" href="${tab.favIconUrl}">
                 <meta http-equiv="refresh" content="0; url=${url}">
             </head>
         </html>
     `
-    return `data:text/html;base64,${btoa(bookmarkBody)}`
+    return `data:text/html;charset=UTF8,${encodeURIComponent(bookmarkBody)}`
 }
 
 function refreshBookmarks(url, title) {
