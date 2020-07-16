@@ -14,10 +14,6 @@ import {
 
 const customProtocolPrefix = 'ext+container:'
 
-const bookmarkParamsSchema = {
-    favIconUrl: [url],
-}
-
 const allowedContainerColors = [
     'blue',
     'turquoise',
@@ -28,6 +24,7 @@ const allowedContainerColors = [
     'pink',
     'purple',
 ]
+
 const allowedContainerIcons = [
     'fingerprint',
     'briefcase',
@@ -61,14 +58,6 @@ const openerParamsSchema = {
 
     // global validators
     __validators: [atLeastOneRequired(['id', 'name'])],
-}
-
-export function parseBookmarkParams(qs) {
-    try {
-        return sanitizeURLSearchParams(new URLSearchParams(qs), bookmarkParamsSchema)
-    } catch (e) {
-        return {}
-    }
 }
 
 export function parseOpenerParams(rawHash) {

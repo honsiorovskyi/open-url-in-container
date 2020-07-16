@@ -6,7 +6,7 @@ import { getSigningKey } from '../config.js'
 import { prepareContainer } from '../containers.js'
 import { newTab, closeCurrentTab } from '../tabs.js'
 import { SignatureError, OpenerParameters } from '../params.js'
-import { parseBookmarkParams, parseOpenerParams } from './parser.js'
+import { parseOpenerParams } from './parser.js'
 
 function error(e) {
     console.error(e)
@@ -14,22 +14,6 @@ function error(e) {
     document.getElementById('internalErrorBody').textContent = e
     document.getElementById('internalErrorContainer').classList.remove('hidden')
 }
-
-function changeFavicon(favIconUrl) {
-    const dataUrlMatch = favIconUrl.match(/data:(.+)[;,]/)
-    if (!dataUrlMatch) {
-        console.warn('favIconUrl is not a data URL, skipping')
-        return
-    }
-
-    var link = document.createElement('link')
-    link.rel = 'icon'
-    link.type = dataUrlMatch[1]
-    link.href = favIconUrl
-
-    document.getElementsByTagName('head')[0].appendChild(link)
-}
-
 
 async function openTabInContainer(params) {
     await newTab(await prepareContainer(params), params)
@@ -55,12 +39,6 @@ function requestConfirmation(params) {
 
 async function main() {
     try {
-        // setup favicon if possible
-        const bookmarkParams = parseBookmarkParams(window.location.search)
-        if (bookmarkParams.favIconUrl) {
-            changeFavicon(bookmarkParams.favIconUrl)
-        }
-
         // get extension parameters
         const parsedParams = parseOpenerParams(window.location.hash)
         const openerParams = new OpenerParameters(parsedParams)
