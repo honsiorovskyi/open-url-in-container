@@ -34,11 +34,10 @@ function bookmarkUrl(tab, qs) {
 }
 
 function refreshBookmarks(url, title) {
-    var existingBookmarks = browser.bookmarks.search({
-        url: url,
-        title: title,
-    }).then(bookmarks =>
-        bookmarks.filter(b => b.parentId === 'unfiled_____')
+    // we have to use search by title and then filter by url manually
+    // because Firefox doesn't allow data URLs in the `url` field in `search` params
+    var existingBookmarks = browser.bookmarks.search({title: title}).then(bookmarks =>
+        bookmarks.filter(b => b.parentId === 'unfiled_____' && b.url == url)
     )
 
     existingBookmarks.then(bookmarks => {
