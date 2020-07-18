@@ -17,10 +17,14 @@ function escape(text) {
 }
 
 function bookmarkUrl(tab, qs) {
+    const url = `ext+container:${qs.toString()}`
+    if (!tab.favIconUrl) {
+        return url
+    }
+
     const dataUrlMatch = tab.favIconUrl.match(/data:(.+)[;,]/)
     const favIconType = dataUrlMatch ? dataUrlMatch[1] : ''
-
-    const url = `ext+container:${qs.toString()}`
+    
     const bookmarkBody = `
         <html>
             <head>
