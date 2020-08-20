@@ -1,0 +1,13 @@
+; Registry key to forward "honsiorovskyi / open-url-in-container" links
+; to Firefox. Requires to add Firefox to your path first.
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\ext+container]
+"URL protocol"=""
+
+[HKEY_CLASSES_ROOT\ext+container\shell]
+
+[HKEY_CLASSES_ROOT\ext+container\shell\open]
+
+[HKEY_CLASSES_ROOT\ext+container\shell\open\command]
+@="firefox %1"
