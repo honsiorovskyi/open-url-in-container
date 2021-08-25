@@ -36,6 +36,10 @@ Also it will work with the [links on the site](ext+container:name=MyContainer&ur
 <a href="ext+container:name=MyContainer&url=https://mozilla.org">Mozilla.Org in MyContainer</a>
 ```
 
+```html
+<a href="ext+container:name=default&url=https://mozilla.org">Mozilla.Org in no container</a>
+```
+
 ## Launcher
 
 Shell launcher provides a shortcut for opening links in a more user-friendly and unix-style way.
