@@ -23,9 +23,9 @@ const schema = {
 	index: [integer],
 	pinned: [boolean],
 	openInReaderMode: [boolean],
-    
-    // global validators
-    __validators: [atLeastOneRequired(['id', 'name'])],
+	
+	// global validators
+	__validators: [atLeastOneRequired(['id', 'name'])],
 }
 
 function error(e) {
@@ -36,7 +36,7 @@ function error(e) {
 }
 
 async function main() {
-	let params, container;
+	let params, container = null;
 	try {
 		params = parseQuery()
 	} catch(e) {
@@ -44,19 +44,21 @@ async function main() {
 		return
 	}
 
-	try {
-		container = await getContainer(params)
-	} catch (e) {
-		error(`Error getting container: ${e}.`)
-		return
-	}
-	
-	if (!container) {
+	if(params.name !== 'default'){
 		try {
-			container = await createContainer(params)
+			container = await getContainer(params)
 		} catch (e) {
-			error(`Error creating container: ${e}.`)
-			return 
+			error(`Error getting container: ${e}.`)
+			return
+		}
+
+		if (!container) {
+			try {
+				container = await createContainer(params)
+			} catch (e) {
+				error(`Error creating container: ${e}.`)
+				return
+			}
 		}
 	}
 
@@ -102,9 +104,14 @@ async function createContainer(params) {
 async function newTab(container, params) {
 	let browserInfo = await browser.runtime.getBrowserInfo()
 	let currentTab = await browser.tabs.getCurrent()
+	let cookieStoreId = 'firefox-default';
+
+	if(container !== null){
+		cookieStoreId = container.cookieStoreId;
+	}
 
 	let createTabParams = {
-		cookieStoreId: container.cookieStoreId,
+		cookieStoreId: cookieStoreId,
 		url: params.url,
 		index: params.index,
 		pinned: params.pinned,
