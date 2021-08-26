@@ -102,18 +102,18 @@ async function createContainer(params) {
 }
 
 async function newTab(container, params) {
-	let browserInfo = await browser.runtime.getBrowserInfo()
-	let currentTab = await browser.tabs.getCurrent()
-	let cookieStoreId = 'firefox-default';
+	const browserInfo = await browser.runtime.getBrowserInfo()
+	const currentTab = await browser.tabs.getCurrent()
+	let cookieStoreId = 'firefox-default'
 
 	if(container !== null){
-		cookieStoreId = container.cookieStoreId;
+		cookieStoreId = container.cookieStoreId
 	}
 
 	let createTabParams = {
 		cookieStoreId: cookieStoreId,
 		url: params.url,
-		index: params.index,
+		index: currentTab.index,
 		pinned: params.pinned,
 	}
 
@@ -123,8 +123,8 @@ async function newTab(container, params) {
 		console.warn('openInReaderMode parameter is not supported in Firefox < 58')
 	}
 
-	await browser.tabs.create(createTabParams)
-	await browser.tabs.remove(currentTab.id)
+	browser.tabs.create(createTabParams)
+	browser.tabs.remove(currentTab.id)
 }
 
 main()
