@@ -129,7 +129,7 @@ Environment variables:
 ### Installation example
 
 ```bash
-$ curl -sL https://github.com/honsiorovskyi/open-url-in-container/raw/master/launcher.sh | sudo tee /usr/bin/firefox-container > /dev/null
+$ curl -sL https://raw.githubusercontent.com/honsiorovskyi/open-url-in-container/master/bin/launcher.sh | sudo tee /usr/bin/firefox-container > /dev/null
 $ sudo chmod 0755 /usr/bin/firefox-container
 ```
 
